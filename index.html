@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Diagnóstico Nutricional</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/a2e0f1f87f.js" crossorigin="anonymous"></script>
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(to bottom right, #eaf3ff, #d1e3ff);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .card {
+      background: #ffffff;
+      padding: 2rem;
+      border-radius: 16px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+    }
+    h1 {
+      margin-bottom: 1.5rem;
+      color: #333;
+    }
+    label {
+      font-weight: bold;
+      margin-top: 1rem;
+      display: block;
+      color: #555;
+      text-align: left;
+    }
+    input {
+      width: 100%;
+      padding: 0.6rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      margin-top: 0.4rem;
+      box-sizing: border-box;
+    }
+    .sexo-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 0.5rem;
+    }
+    .sexo-button {
+      flex: 1;
+      margin: 0.2rem;
+      padding: 0.6rem;
+      font-size: 1rem;
+      border: 2px solid #ccc;
+      border-radius: 8px;
+      background: #f1f1f1;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .sexo-button.selected {
+      background-color: #007bff;
+      color: white;
+      border-color: #007bff;
+    }
+    button {
+      width: 100%;
+      padding: 0.75rem;
+      margin-top: 1.5rem;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      transition: background 0.3s;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .resultado {
+      margin-top: 1.5rem;
+      display: none;
+      background-color: #f4f8ff;
+      padding: 1rem;
+      border-radius: 10px;
+      border: 1px solid #cce5ff;
+      color: #004085;
+      font-size: 1.1rem;
+      box-shadow: 0 0 10px rgba(0, 123, 255, 0.1);
+    }
+
+    .spinner {
+      display: none;
+      margin-top: 20px;
+    }
+
+    .spinner i {
+      font-size: 1.5rem;
+      color: #007bff;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Diagnóstico Nutricional</h1>
+
+    <label for="peso">Peso (libras):</label>
+    <input type="number" id="peso" placeholder="Ej: 21.5">
+
+    <label for="talla">Talla (cm):</label>
+    <input type="number" id="talla" placeholder="Ej: 110">
+
+    <label>Sexo:</label>
+    <div class="sexo-buttons">
+      <div class="sexo-button selected" onclick="seleccionarSexo(this, 'masculino')">Masculino</div>
+      <div class="sexo-button" onclick="seleccionarSexo(this, 'femenino')">Femenino</div>
+    </div>
+
+    <button onclick="enviar()">Calcular</button>
+
+    <div class="spinner" id="spinner">
+      <i class="fas fa-spinner"></i> Calculando...
+    </div>
+
+    <div id="resultado" class="resultado"></div>
+  </div>
+
+  <script>
+    let sexoSeleccionado = "masculino";
+
+    function seleccionarSexo(elemento, sexo) {
+      sexoSeleccionado = sexo;
+      document.querySelectorAll('.sexo-button').forEach(btn => btn.classList.remove('selected'));
+      elemento.classList.add('selected');
+    }
+
+    function enviar() {
+      const libras = parseFloat(document.getElementById("peso").value);
+      const talla = parseFloat(document.getElementById("talla").value);
+
+      if (isNaN(libras) || isNaN(talla)) {
+        alert("Por favor completa todos los campos.");
+        return;
+      }
+
+      const pesoKg = (libras * 0.453592).toFixed(2);
+      const spinner = document.getElementById("spinner");
+      const resultado = document.getElementById("resultado");
+
+      spinner.style.display = "block";
+      resultado.style.display = "none";
+
+      fetch("https://calculadoranin-production.up.railway.app/diagnostico", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ peso: parseFloat(pesoKg), talla, sexo: sexoSeleccionado })
+      })
+      .then(res => res.json())
+      .then(data => {
+        spinner.style.display = "none";
+        resultado.style.display = "block";
+        resultado.innerHTML = `<strong>Resultado:</strong> ${data.resultado}`;
+      })
+      .catch(() => {
+        spinner.style.display = "none";
+        alert("Error al conectar con el servidor.");
+      });
+    }
+  </script>
+</body>
+</html>
