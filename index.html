@@ -180,7 +180,7 @@
       spinner.style.display = "block";
       resultado.style.display = "none";
 
-      fetch("http://calculadora.cloack.online:9191/diagnostico", {
+      fetch("https://calculadoranin-production.up.railway.app/diagnostico", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ peso: parseFloat(kilos.toFixed(2)), talla, sexo: sexoSeleccionado })
