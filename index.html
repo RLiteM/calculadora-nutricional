@@ -43,6 +43,12 @@
       margin-top: 0.4rem;
       box-sizing: border-box;
     }
+    #kilos {
+      margin-top: 0.4rem;
+      font-size: 0.95rem;
+      color: #007bff;
+      text-align: left;
+    }
     .sexo-buttons {
       display: flex;
       justify-content: space-between;
@@ -79,7 +85,6 @@
     button:hover {
       background-color: #0056b3;
     }
-
     .resultado {
       margin-top: 1.5rem;
       display: none;
@@ -91,18 +96,15 @@
       font-size: 1.1rem;
       box-shadow: 0 0 10px rgba(0, 123, 255, 0.1);
     }
-
     .spinner {
       display: none;
       margin-top: 20px;
     }
-
     .spinner i {
       font-size: 1.5rem;
       color: #007bff;
       animation: spin 1s linear infinite;
     }
-
     @keyframes spin {
       from { transform: rotate(0deg); }
       to   { transform: rotate(360deg); }
@@ -113,10 +115,15 @@
   <div class="card">
     <h1>Diagnóstico Nutricional</h1>
 
-    <label for="peso">Peso (libras):</label>
-    <input type="number" id="peso" placeholder="Ej: 21.5">
+    <label for="libras">Libras:</label>
+    <input type="number" id="libras" placeholder="Ej: 20">
 
-    <label for="talla">Talla ():</label>
+    <label for="onzas">Onzas:</label>
+    <input type="number" id="onzas" placeholder="Ej: 8">
+
+    <div id="kilos">Equivale a: 0.00 kg</div>
+
+    <label for="talla">Talla (cm):</label>
     <input type="number" id="talla" placeholder="Ej: 110">
 
     <label>Sexo:</label>
@@ -143,16 +150,30 @@
       elemento.classList.add('selected');
     }
 
-    function enviar() {
-      const libras = parseFloat(document.getElementById("peso").value);
-      const talla = parseFloat(document.getElementById("talla").value);
+    function calcularKilos() {
+      const libras = parseFloat(document.getElementById("libras").value) || 0;
+      const onzas = parseFloat(document.getElementById("onzas").value) || 0;
+      const totalLibras = libras + (onzas / 16);
+      return totalLibras / 2.2;
+    }
 
-      if (isNaN(libras) || isNaN(talla)) {
-        alert("Por favor completa todos los campos.");
+    function actualizarConversion() {
+      const kilos = calcularKilos();
+      document.getElementById("kilos").innerText = `Equivale a: ${kilos.toFixed(2)} kg`;
+    }
+
+    document.getElementById("libras").addEventListener("input", actualizarConversion);
+    document.getElementById("onzas").addEventListener("input", actualizarConversion);
+
+    function enviar() {
+      const talla = parseFloat(document.getElementById("talla").value);
+      const kilos = calcularKilos();
+
+      if (kilos <= 0 || isNaN(talla)) {
+        alert("Por favor completa todos los campos correctamente.");
         return;
       }
 
-      const pesoKg = (libras * 0.453592).toFixed(2);
       const spinner = document.getElementById("spinner");
       const resultado = document.getElementById("resultado");
 
@@ -162,7 +183,7 @@
       fetch("https://calculadoranin-production.up.railway.app/diagnostico", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ peso: parseFloat(pesoKg), talla, sexo: sexoSeleccionado })
+        body: JSON.stringify({ peso: parseFloat(kilos.toFixed(2)), talla, sexo: sexoSeleccionado })
       })
       .then(res => res.json())
       .then(data => {
