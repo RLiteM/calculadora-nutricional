@@ -128,8 +128,8 @@
 
     <label>Sexo:</label>
     <div class="sexo-buttons">
-      <div class="sexo-button selected" onclick="seleccionarSexo(this, 'm')">Masculino</div>
-      <div class="sexo-button" onclick="seleccionarSexo(this, 'f')">Femenino</div>
+      <div class="sexo-button selected" onclick="seleccionarSexo(this, 'masculino')">Masculino</div>
+      <div class="sexo-button" onclick="seleccionarSexo(this, 'femenino')">Femenino</div>
     </div>
 
     <button onclick="enviar()">Calcular</button>
@@ -142,7 +142,7 @@
   </div>
 
   <script>
-    let sexoSeleccionado = "m";
+    let sexoSeleccionado = "masculino";
 
     function seleccionarSexo(elemento, sexo) {
       sexoSeleccionado = sexo;
@@ -153,12 +153,13 @@
     function calcularKilos() {
       const libras = parseFloat(document.getElementById("libras").value) || 0;
       const onzas = parseFloat(document.getElementById("onzas").value) || 0;
-      return libras * 0.453592 + onzas * 0.0283495;
+      const totalLibras = libras + (onzas / 16);
+      return totalLibras / 2.2;
     }
 
     function actualizarConversion() {
       const kilos = calcularKilos();
-      document.getElementById("kilos").innerText = `Equivale a: ${kilos.toFixed(2)} kg`;
+      document.getElementById("kilos").innerText = Equivale a: ${kilos.toFixed(2)} kg;
     }
 
     document.getElementById("libras").addEventListener("input", actualizarConversion);
@@ -173,15 +174,6 @@
         return;
       }
 
-      const pesoEnviado = Number(kilos.toFixed(2));  // valor visible y enviado
-      const payload = {
-        peso: pesoEnviado,
-        talla: talla,
-        sexo: sexoSeleccionado
-      };
-
-      console.log("📤 Enviando al backend:", payload);
-
       const spinner = document.getElementById("spinner");
       const resultado = document.getElementById("resultado");
 
@@ -191,14 +183,13 @@
       fetch("https://calculadoranin-production.up.railway.app/diagnostico", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
+        body: JSON.stringify({ peso: parseFloat(kilos.toFixed(2)), talla, sexo: sexoSeleccionado })
       })
       .then(res => res.json())
       .then(data => {
         spinner.style.display = "none";
         resultado.style.display = "block";
-        resultado.innerHTML = `<strong>Resultado:</strong> ${data.resultado}`;
-        console.log("✅ Respuesta del backend:", data);
+        resultado.innerHTML = <strong>Resultado:</strong> ${data.resultado};
       })
       .catch(() => {
         spinner.style.display = "none";
