@@ -159,7 +159,7 @@
 
     function actualizarConversion() {
       const kilos = calcularKilos();
-      document.getElementById("kilos").innerText = Equivale a: ${kilos.toFixed(2)} kg;
+      document.getElementById("kilos").innerText = `Equivale a: ${kilos.toFixed(2)} kg`;
     }
 
     document.getElementById("libras").addEventListener("input", actualizarConversion);
@@ -168,11 +168,20 @@
     function enviar() {
       const talla = parseFloat(document.getElementById("talla").value);
       const kilos = calcularKilos();
+      const peso = parseFloat(kilos.toFixed(2));
 
-      if (kilos <= 0 || isNaN(talla)) {
+      if (peso <= 0 || isNaN(talla)) {
         alert("Por favor completa todos los campos correctamente.");
         return;
       }
+
+      const payload = {
+        peso: peso,
+        talla: talla,
+        sexo: sexoSeleccionado === "masculino" ? "m" : "f"
+      };
+
+      console.log("📤 Enviando al backend:", payload);
 
       const spinner = document.getElementById("spinner");
       const resultado = document.getElementById("resultado");
@@ -183,13 +192,14 @@
       fetch("https://calculadoranin-production.up.railway.app/diagnostico", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ peso: parseFloat(kilos.toFixed(2)), talla, sexo: sexoSeleccionado })
+        body: JSON.stringify(payload)
       })
       .then(res => res.json())
       .then(data => {
         spinner.style.display = "none";
         resultado.style.display = "block";
-        resultado.innerHTML = <strong>Resultado:</strong> ${data.resultado};
+        resultado.innerHTML = `<strong>Resultado:</strong> ${data.resultado}`;
+        console.log("✅ Respuesta del backend:", data);
       })
       .catch(() => {
         spinner.style.display = "none";
