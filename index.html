@@ -5,140 +5,22 @@
   <title>Diagnóstico Nutricional</title>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
   <script src="https://kit.fontawesome.com/a2e0f1f87f.js" crossorigin="anonymous"></script>
-  <style>
-    body {
-      font-family: 'Roboto', sans-serif;
-      background: linear-gradient(to bottom right, #eaf3ff, #d1e3ff);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-      padding: 1rem;
-    }
-    .card {
-      background: #ffffff;
-      padding: 2rem;
-      border-radius: 16px;
-      box-shadow: 0 8px 16px rgba(0,0,0,0.1);
-      width: 100%;
-      max-width: 400px;
-      text-align: center;
-    }
-    @media (max-width: 500px) {
-      .card {
-        max-width: 95%;
-        padding: 1rem;
-      }
-    }
-    h1 {
-      margin-bottom: 1.5rem;
-      color: #333;
-    }
-    label {
-      font-weight: bold;
-      margin-top: 1rem;
-      display: block;
-      color: #555;
-      text-align: left;
-    }
-    .row {
-      display: flex;
-      gap: 0.5rem;
-    }
-    .row input {
-      flex: 1;
-    }
-    input {
-      width: 100%;
-      padding: 0.6rem;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      margin-top: 0.4rem;
-      box-sizing: border-box;
-    }
-    #kilos, #edad {
-      margin-top: 0.4rem;
-      font-size: 0.95rem;
-      color: #007bff;
-      text-align: left;
-    }
-    .sexo-buttons {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 0.5rem;
-    }
-    .sexo-button {
-      flex: 1;
-      margin: 0.2rem;
-      padding: 0.6rem;
-      font-size: 1rem;
-      border: 2px solid #ccc;
-      border-radius: 8px;
-      background: #f1f1f1;
-      cursor: pointer;
-      transition: background 0.2s, border-color 0.2s;
-    }
-    .sexo-button.selected {
-      background-color: #007bff;
-      color: white;
-      border-color: #007bff;
-    }
-    button {
-      width: 100%;
-      padding: 0.75rem;
-      margin-top: 1rem;
-      background-color: #007bff;
-      color: white;
-      border: none;
-      border-radius: 10px;
-      font-size: 1rem;
-      transition: background 0.3s;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #0056b3;
-    }
-    .resultado {
-      margin-top: 1.5rem;
-      display: none;
-      padding: 1rem;
-      border-radius: 10px;
-      border: 1px solid #cce5ff;
-      color: white;
-      font-size: 1.1rem;
-      box-shadow: 0 0 10px rgba(0, 123, 255, 0.1);
-    }
-    .severa { background-color: #d9534f; }         /* rojo */
-    .moderada { background-color: #f0ad4e; }       /* naranja */
-    .riesgo { background-color: #ffd500; color: #333; } /* amarillo */
-    .normal { background-color: #5cb85c; }         /* verde */
-    .sobrepeso { background-color: #ff69b4; }      /* rosado */
-    .obesidad { background-color: #6c757d; }       /* gris oscuro */
-    .spinner {
-      display: none;
-      margin-top: 20px;
-    }
-    .spinner i {
-      font-size: 1.5rem;
-      color: #007bff;
-      animation: spin 1s linear infinite;
-    }
-    @keyframes spin {
-      from { transform: rotate(0deg); }
-      to   { transform: rotate(360deg); }
-    }
-  </style>
+<link rel="stylesheet" href="Estilos.css">
+
 </head>
 <body>
   <div class="card">
     <h1>Diagnóstico Nutricional</h1>
+
+
 
     <label>Fechas:</label>
     <div class="row">
       <input type="date" id="fecha_nac" placeholder="Nacimiento">
       <input type="date" id="fecha_eval">
     </div>
+
+    <div id="edad">Edad : --</div>
 
     <label>Peso:</label>
     <div class="row">
@@ -147,12 +29,12 @@
     </div>
 
     <div id="kilos">Equivale a: 0.00 kg</div>
-    <div id="edad">Edad calculada: --</div>
+    
 
     <label for="talla">Talla (cm):</label>
     <input type="number" id="talla" placeholder="Ej: 110">
-
-    <label>Sexo:</label>
+    
+        <label>Sexo:</label>
     <div class="sexo-buttons">
       <div class="sexo-button" onclick="seleccionarSexo(this, 'masculino')">Masculino</div>
       <div class="sexo-button" onclick="seleccionarSexo(this, 'femenino')">Femenino</div>
@@ -168,137 +50,6 @@
     <div id="resultado" class="resultado"></div>
   </div>
 
-  <script>
-    let sexoSeleccionado = null;
-
-    document.getElementById("fecha_eval").value = new Date().toISOString().split('T')[0];
-
-    function seleccionarSexo(elemento, sexo) {
-      sexoSeleccionado = sexo;
-      document.querySelectorAll('.sexo-button').forEach(btn => btn.classList.remove('selected'));
-      elemento.classList.add('selected');
-    }
-
-    function calcularKilos() {
-      const libras = parseFloat(document.getElementById("libras").value) || 0;
-      const onzas = parseFloat(document.getElementById("onzas").value) || 0;
-      const totalLibras = libras + (onzas / 16);
-      return totalLibras / 2.2;
-    }
-
-    function calcularEdadTextoYDecimal(fechaNacimiento, fechaEvaluacion) {
-      const nacimiento = new Date(fechaNacimiento);
-      const evaluacion = new Date(fechaEvaluacion);
-
-      let años = evaluacion.getFullYear() - nacimiento.getFullYear();
-      let meses = evaluacion.getMonth() - nacimiento.getMonth();
-      let dias = evaluacion.getDate() - nacimiento.getDate();
-
-      if (dias < 0) {
-        meses -= 1;
-        const mesAnterior = new Date(evaluacion.getFullYear(), evaluacion.getMonth(), 0);
-        dias += mesAnterior.getDate();
-      }
-      if (meses < 0) {
-        años -= 1;
-        meses += 12;
-      }
-
-      const msPorDia = 1000 * 60 * 60 * 24;
-      const diferenciaDias = (evaluacion - nacimiento) / msPorDia;
-      const edadDecimal = diferenciaDias / 365.25;
-
-      const texto = `${años} años, ${meses} meses, ${dias} días`;
-      return { texto, decimal: parseFloat(edadDecimal.toFixed(6)) };
-    }
-
-    function actualizarConversion() {
-      const kilos = calcularKilos();
-      document.getElementById("kilos").innerText = `Equivale a: ${kilos.toFixed(2)} kg`;
-
-      const fechaNac = document.getElementById("fecha_nac").value;
-      const fechaEval = document.getElementById("fecha_eval").value;
-
-      if (fechaNac && fechaEval) {
-        const { texto } = calcularEdadTextoYDecimal(fechaNac, fechaEval);
-        document.getElementById("edad").innerText = `Edad calculada: ${texto}`;
-      } else {
-        document.getElementById("edad").innerText = `Edad calculada: --`;
-      }
-    }
-
-    document.getElementById("libras").addEventListener("input", actualizarConversion);
-    document.getElementById("onzas").addEventListener("input", actualizarConversion);
-    document.getElementById("fecha_nac").addEventListener("input", actualizarConversion);
-    document.getElementById("fecha_eval").addEventListener("input", actualizarConversion);
-
-    function enviar() {
-      const talla = parseFloat(document.getElementById("talla").value);
-      const kilos = calcularKilos();
-      const peso = parseFloat(kilos.toFixed(2));
-      const fechaNac = document.getElementById("fecha_nac").value;
-      const fechaEval = document.getElementById("fecha_eval").value;
-
-      if (peso <= 0 || isNaN(talla) || !fechaNac || !fechaEval || !sexoSeleccionado) {
-        alert("Por favor completa todos los campos correctamente, incluyendo sexo.");
-        return;
-      }
-
-      const { decimal } = calcularEdadTextoYDecimal(fechaNac, fechaEval);
-
-      const payload = {
-        peso: peso,
-        talla: talla,
-        sexo: sexoSeleccionado === "masculino" ? "m" : "f",
-        edad: decimal
-      };
-
-      console.log("📤 Enviando al backend:", payload);
-
-      const spinner = document.getElementById("spinner");
-      const resultado = document.getElementById("resultado");
-
-      spinner.style.display = "block";
-      resultado.style.display = "none";
-
-      fetch("https://calculadoranin-production.up.railway.app/diagnostico", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      })
-      .then(res => res.json())
-      .then(data => {
-        spinner.style.display = "none";
-        resultado.style.display = "block";
-        resultado.className = "resultado"; // reset classes
-
-        const texto = data.resultado;
-        resultado.textContent = `Resultado: ${texto}`;
-
-        if (texto.includes("Severa")) resultado.classList.add("severa");
-        else if (texto.includes("Moderada")) resultado.classList.add("moderada");
-        else if (texto.includes("Riesgo")) resultado.classList.add("riesgo");
-        else if (texto.includes("Normal")) resultado.classList.add("normal");
-        else if (texto.includes("Sobrepeso")) resultado.classList.add("sobrepeso");
-        else if (texto.includes("Obesidad")) resultado.classList.add("obesidad");
-
-        console.log("✅ Respuesta del backend:", data);
-      })
-      .catch(() => {
-        spinner.style.display = "none";
-        alert("Error al conectar con el servidor.");
-      });
-    }
-
-    function nuevoCalculo() {
-      document.querySelectorAll('input').forEach(input => input.value = '');
-      document.querySelectorAll('.sexo-button').forEach(btn => btn.classList.remove('selected'));
-      sexoSeleccionado = null;
-      document.getElementById("fecha_eval").value = new Date().toISOString().split('T')[0];
-      document.getElementById("kilos").innerText = `Equivale a: 0.00 kg`;
-      document.getElementById("edad").innerText = `Edad calculada: --`;
-      document.getElementById("resultado").style.display = "none";
-    }
-  </script>
+<script src="logsd.js"></script>
 </body>
 </html>

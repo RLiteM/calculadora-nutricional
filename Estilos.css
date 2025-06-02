@@ -1,0 +1,122 @@
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(to bottom right, #eaf3ff, #d1e3ff);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      padding: 1rem;
+    }
+    .card {
+      background: #ffffff;
+      padding: 2rem;
+      border-radius: 16px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+    }
+    @media (max-width: 500px) {
+      .card {
+        max-width: 95%;
+        padding: 1rem;
+      }
+    }
+    h1 {
+      margin-bottom: 1.5rem;
+      color: #333;
+    }
+    label {
+      font-weight: bold;
+      margin-top: 1rem;
+      display: block;
+      color: #555;
+      text-align: left;
+    }
+    .row {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .row input {
+      flex: 1;
+    }
+    input {
+      width: 100%;
+      padding: 0.6rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      margin-top: 0.4rem;
+      box-sizing: border-box;
+    }
+    #kilos, #edad {
+      margin-top: 0.4rem;
+      font-size: 0.95rem;
+      color: #007bff;
+      text-align: left;
+    }
+    .sexo-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 0.5rem;
+    }
+    .sexo-button {
+      flex: 1;
+      margin: 0.2rem;
+      padding: 0.6rem;
+      font-size: 1rem;
+      border: 2px solid #ccc;
+      border-radius: 8px;
+      background: #f1f1f1;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .sexo-button.selected {
+      background-color: #007bff;
+      color: white;
+      border-color: #007bff;
+    }
+    button {
+      width: 100%;
+      padding: 0.75rem;
+      margin-top: 1rem;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      transition: background 0.3s;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .resultado {
+      margin-top: 1.5rem;
+      display: none;
+      padding: 1rem;
+      border-radius: 10px;
+      border: 1px solid #cce5ff;
+      color: white;
+      font-size: 1.1rem;
+      box-shadow: 0 0 10px rgba(0, 123, 255, 0.1);
+    }
+    .severa { background-color: #d9534f; }         /* rojo */
+    .moderada { background-color: #f0ad4e; }       /* naranja */
+    .riesgo { background-color: #ffd500; color: #333; } /* amarillo */
+    .normal { background-color: #5cb85c; }         /* verde */
+    .sobrepeso { background-color: #ff69b4; }      /* rosado */
+    .obesidad { background-color: #6c757d; }       /* gris oscuro */
+    .spinner {
+      display: none;
+      margin-top: 20px;
+    }
+    .spinner i {
+      font-size: 1.5rem;
+      color: #007bff;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
