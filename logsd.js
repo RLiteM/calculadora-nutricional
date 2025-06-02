@@ -138,3 +138,23 @@ function nuevoCalculo() {
   document.getElementById("edad").innerText = `Edad calculada: --`;
   document.getElementById("resultado").style.display = "none";
 }
+
+function limitarAñoEstricto(input) {
+  input.addEventListener('input', () => {
+    const partes = input.value.split('-');
+    if (partes.length === 3) {
+      let year = partes[0];
+      if (year.length > 4) {
+        // Limita el año a solo los primeros 4 caracteres
+        year = year.slice(0, 4);
+        input.value = `${year}-${partes[1]}-${partes[2]}`;
+      }
+    }
+  });
+}
+
+// Aplica a ambos campos
+limitarAñoEstricto(document.getElementById("fecha_nac"));
+limitarAñoEstricto(document.getElementById("fecha_eval"));
+
+
