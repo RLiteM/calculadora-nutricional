@@ -43,7 +43,7 @@
       margin-top: 0.4rem;
       box-sizing: border-box;
     }
-    #kilos {
+    #kilos, #edad {
       margin-top: 0.4rem;
       font-size: 0.95rem;
       color: #007bff;
@@ -115,6 +115,12 @@
   <div class="card">
     <h1>Diagnóstico Nutricional</h1>
 
+    <label for="fecha_nac">Fecha de Nacimiento:</label>
+    <input type="date" id="fecha_nac">
+
+    <label for="fecha_eval">Fecha a Evaluar:</label>
+    <input type="date" id="fecha_eval" value="">
+
     <label for="libras">Libras:</label>
     <input type="number" id="libras" placeholder="Ej: 20">
 
@@ -122,6 +128,7 @@
     <input type="number" id="onzas" placeholder="Ej: 8">
 
     <div id="kilos">Equivale a: 0.00 kg</div>
+    <div id="edad">Edad calculada: -- años</div>
 
     <label for="talla">Talla (cm):</label>
     <input type="number" id="talla" placeholder="Ej: 110">
@@ -144,6 +151,8 @@
   <script>
     let sexoSeleccionado = "masculino";
 
+    document.getElementById("fecha_eval").value = new Date().toISOString().split('T')[0];
+
     function seleccionarSexo(elemento, sexo) {
       sexoSeleccionado = sexo;
       document.querySelectorAll('.sexo-button').forEach(btn => btn.classList.remove('selected'));
@@ -157,28 +166,53 @@
       return totalLibras / 2.2;
     }
 
+    function calcularEdad() {
+      const fechaNacStr = document.getElementById("fecha_nac").value;
+      const fechaEvalStr = document.getElementById("fecha_eval").value;
+
+      if (!fechaNacStr || !fechaEvalStr) return null;
+
+      const fechaNac = new Date(fechaNacStr);
+      const fechaEval = new Date(fechaEvalStr);
+
+      if (fechaEval < fechaNac) return null;
+
+      const diffMs = fechaEval - fechaNac;
+      const diffDias = diffMs / (1000 * 60 * 60 * 24);
+      const edadAnios = diffDias / 365.25;
+
+      return parseFloat(edadAnios.toFixed(2));
+    }
+
     function actualizarConversion() {
       const kilos = calcularKilos();
       document.getElementById("kilos").innerText = `Equivale a: ${kilos.toFixed(2)} kg`;
+
+      const edad = calcularEdad();
+      document.getElementById("edad").innerText = edad !== null ? `Edad calculada: ${edad} años` : `Edad calculada: -- años`;
     }
 
     document.getElementById("libras").addEventListener("input", actualizarConversion);
     document.getElementById("onzas").addEventListener("input", actualizarConversion);
+    document.getElementById("fecha_nac").addEventListener("input", actualizarConversion);
+    document.getElementById("fecha_eval").addEventListener("input", actualizarConversion);
 
     function enviar() {
       const talla = parseFloat(document.getElementById("talla").value);
       const kilos = calcularKilos();
       const peso = parseFloat(kilos.toFixed(2));
+      const edad = calcularEdad();
 
-      if (peso <= 0 || isNaN(talla)) {
-        alert("Por favor completa todos los campos correctamente.");
+      if (peso <= 0 || isNaN(talla) || edad === null) {
+        alert("Por favor completa todos los campos correctamente, incluyendo fechas válidas.");
         return;
       }
 
       const payload = {
         peso: peso,
         talla: talla,
-        sexo: sexoSeleccionado === "masculino" ? "m" : "f"
+        sexo: sexoSeleccionado === "masculino" ? "m" : "f",
+        edad: edad
       };
 
       console.log("📤 Enviando al backend:", payload);
