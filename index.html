@@ -95,14 +95,19 @@
     .resultado {
       margin-top: 1.5rem;
       display: none;
-      background-color: #f4f8ff;
       padding: 1rem;
       border-radius: 10px;
       border: 1px solid #cce5ff;
-      color: #004085;
+      color: white;
       font-size: 1.1rem;
       box-shadow: 0 0 10px rgba(0, 123, 255, 0.1);
     }
+    .severa { background-color: #d9534f; }         /* rojo */
+    .moderada { background-color: #f0ad4e; }       /* naranja */
+    .riesgo { background-color: #ffd500; color: #333; } /* amarillo */
+    .normal { background-color: #5cb85c; }         /* verde */
+    .sobrepeso { background-color: #ff69b4; }      /* rosado */
+    .obesidad { background-color: #6c757d; }       /* gris oscuro */
     .spinner {
       display: none;
       margin-top: 20px;
@@ -258,7 +263,18 @@
       .then(data => {
         spinner.style.display = "none";
         resultado.style.display = "block";
-        resultado.innerHTML = `<strong>Resultado:</strong> ${data.resultado}`;
+        resultado.className = "resultado"; // reset classes
+
+        const texto = data.resultado;
+        resultado.textContent = `Resultado: ${texto}`;
+
+        if (texto.includes("Severa")) resultado.classList.add("severa");
+        else if (texto.includes("Moderada")) resultado.classList.add("moderada");
+        else if (texto.includes("Riesgo")) resultado.classList.add("riesgo");
+        else if (texto.includes("Normal")) resultado.classList.add("normal");
+        else if (texto.includes("Sobrepeso")) resultado.classList.add("sobrepeso");
+        else if (texto.includes("Obesidad")) resultado.classList.add("obesidad");
+
         console.log("✅ Respuesta del backend:", data);
       })
       .catch(() => {
