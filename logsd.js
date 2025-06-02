@@ -61,67 +61,63 @@
     document.getElementById("fecha_nac").addEventListener("input", actualizarConversion);
     document.getElementById("fecha_eval").addEventListener("input", actualizarConversion);
 
-function enviar() {
-  const talla = parseFloat(document.getElementById("talla").value);
-  const kilos = calcularKilos();
+    function enviar() {
+      const talla = parseFloat(document.getElementById("talla").value);
+      const kilos = calcularKilos();
+      const peso = parseFloat(kilos.toFixed(2));
+      const fechaNac = document.getElementById("fecha_nac").value;
+      const fechaEval = document.getElementById("fecha_eval").value;
 
-  // ✅ TRUNCAMOS A SOLO UN DECIMAL (sin redondeo)
-  const peso = Math.trunc(kilos * 10) / 10;
+      if (peso <= 0 || isNaN(talla) || !fechaNac || !fechaEval || !sexoSeleccionado) {
+        alert("Por favor completa todos los campos correctamente, incluyendo sexo.");
+        return;
+      }
 
-  const fechaNac = document.getElementById("fecha_nac").value;
-  const fechaEval = document.getElementById("fecha_eval").value;
+      const { decimal } = calcularEdadTextoYDecimal(fechaNac, fechaEval);
 
-  if (peso <= 0 || isNaN(talla) || !fechaNac || !fechaEval || !sexoSeleccionado) {
-    alert("Por favor completa todos los campos correctamente, incluyendo sexo.");
-    return;
-  }
+      const payload = {
+        peso: peso,
+        talla: talla,
+        sexo: sexoSeleccionado === "masculino" ? "m" : "f",
+        edad: decimal
+      };
 
-  const { decimal } = calcularEdadTextoYDecimal(fechaNac, fechaEval);
+      console.log("📤 Enviando al backend:", payload);
 
-  const payload = {
-    peso: peso,
-    talla: talla,
-    sexo: sexoSeleccionado === "masculino" ? "m" : "f",
-    edad: decimal
-  };
+      const spinner = document.getElementById("spinner");
+      const resultado = document.getElementById("resultado");
 
-  console.log("📤 Enviando al backend:", payload);
+      spinner.style.display = "block";
+      resultado.style.display = "none";
 
-  const spinner = document.getElementById("spinner");
-  const resultado = document.getElementById("resultado");
+      fetch("https://calculadoranin-production.up.railway.app/diagnostico", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      })
+      .then(res => res.json())
+      .then(data => {
+        spinner.style.display = "none";
+        resultado.style.display = "block";
+        resultado.className = "resultado"; // reset classes
 
-  spinner.style.display = "block";
-  resultado.style.display = "none";
+        const texto = data.resultado;
+        resultado.textContent = `Resultado: ${texto}`;
 
-  fetch("https://calculadoranin-production.up.railway.app/diagnostico", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload)
-  })
-    .then(res => res.json())
-    .then(data => {
-      spinner.style.display = "none";
-      resultado.style.display = "block";
-      resultado.className = "resultado"; // reset classes
+        if (texto.includes("Severa")) resultado.classList.add("severa");
+        else if (texto.includes("Moderada")) resultado.classList.add("moderada");
+        else if (texto.includes("Riesgo")) resultado.classList.add("riesgo");
+        else if (texto.includes("Normal")) resultado.classList.add("normal");
+        else if (texto.includes("Sobrepeso")) resultado.classList.add("sobrepeso");
+        else if (texto.includes("Obesidad")) resultado.classList.add("obesidad");
 
-      const texto = data.resultado;
-      resultado.textContent = `Resultado: ${texto}`;
-
-      if (texto.includes("Severa")) resultado.classList.add("severa");
-      else if (texto.includes("Moderada")) resultado.classList.add("moderada");
-      else if (texto.includes("Riesgo")) resultado.classList.add("riesgo");
-      else if (texto.includes("Normal")) resultado.classList.add("normal");
-      else if (texto.includes("Sobrepeso")) resultado.classList.add("sobrepeso");
-      else if (texto.includes("Obesidad")) resultado.classList.add("obesidad");
-
-      console.log("✅ Respuesta del backend:", data);
-    })
-    .catch(() => {
-      spinner.style.display = "none";
-      alert("Error al conectar con el servidor.");
-    });
-}
-
+        console.log("✅ Respuesta del backend:", data);
+      })
+      .catch(() => {
+        spinner.style.display = "none";
+        alert("Error al conectar con el servidor.");
+      });
+    }
 
     function nuevoCalculo() {
       document.querySelectorAll('input').forEach(input => input.value = '');
