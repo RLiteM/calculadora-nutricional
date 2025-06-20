@@ -193,11 +193,46 @@ button {
   }
 
   .fila-fechas > input {
-    flex: 1 1 100%; /* ✅ fechas en una sola columna */
+    flex: 1 1 100%; 
   }
 
   .fila > input,
   .fila-sexo > button {
-    flex: 1 1 48%; /* ✅ peso y sexo siguen en dos columnas */
+    flex: 1 1 48%; 
   }
+}
+
+.fila-boton-limpiar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.fila-boton-limpiar > #botonPrincipal {
+  flex: 1; 
+}
+
+#botonBasura.btn-icono {
+  background: white;
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  height: 49px; 
+  width: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  transition: transform 0.2s ease-in-out;
+}
+
+#botonBasura:hover {
+  transform: scale(1.1);
+}
+
+#botonBasura img {
+  width: 28px;
+  height: 28px;
 }

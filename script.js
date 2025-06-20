@@ -156,3 +156,22 @@ document.addEventListener("DOMContentLoaded", () => {
   calcularEdad();
   calcularPesoKg();
 });
+
+const botonBasura = document.getElementById("botonBasura");
+
+botonBasura.addEventListener("click", () => {
+  form.reset();
+  edadCalculada.textContent = "--";
+  pesoKgSpan.textContent = "0.00";
+  resultadoDiv.innerHTML = "";
+  contenedor.classList.remove("masculino", "femenino");
+  sexoButtons.forEach(btn => btn.classList.remove("selected"));
+  sexoInput.value = "";
+  fechaEval.value = hoy;
+  calcularEdad();
+  calcularPesoKg();
+  boton.textContent = "Evaluar";
+  boton.classList.remove("btn-limpiar");
+  boton.classList.add("btn-evaluar");
+  evaluado = false;
+});

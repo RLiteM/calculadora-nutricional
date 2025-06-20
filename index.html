@@ -44,12 +44,19 @@
       </div>
       <input type="hidden" name="sexo" id="sexo" required />
 
-      <button type="submit" id="botonPrincipal" class="btn-evaluar">Evaluar</button>
+<div class="fila fila-boton-limpiar">
+  <button type="submit" id="botonPrincipal" class="btn-evaluar">Evaluar</button>
+  <button type="button" id="botonBasura" class="btn-icono" title="Limpiar">
+    <img src="img/ic_basura.png" alt="Limpiar" />
+  </button>
+</div>
     </form>
 
     <div id="resultado" class="resultado"></div>
   </div>
 
   <script type="module" src="script.js"></script>
+  <script type="module" src="limpiar.js"></script>
+
 </body>
 </html>
