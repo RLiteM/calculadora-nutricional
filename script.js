@@ -16,7 +16,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let edadMesesFinal = null;
   let pesoKgCalculado = 0;
-  let evaluado = false;
 
   sexoButtons.forEach(btn =>
     btn.addEventListener("click", () => {
@@ -26,7 +25,6 @@ document.addEventListener("DOMContentLoaded", () => {
       contenedor.classList.remove("masculino", "femenino");
       if (btn.dataset.sexo === "M") contenedor.classList.add("masculino");
       if (btn.dataset.sexo === "F") contenedor.classList.add("femenino");
-      resetEvaluarSiModificado();
     })
   );
 
@@ -73,18 +71,8 @@ document.addEventListener("DOMContentLoaded", () => {
     return "";
   }
 
-  function resetEvaluarSiModificado() {
-    if (evaluado) {
-      boton.textContent = "Evaluar";
-      boton.classList.remove("btn-limpiar");
-      boton.classList.add("btn-evaluar");
-      evaluado = false;
-    }
-  }
-
   ["fechaNacimiento", "fechaEvaluacion", "libras", "onzas", "talla"].forEach(name => {
     form[name].addEventListener("input", () => {
-      resetEvaluarSiModificado();
       calcularEdad();
       calcularPesoKg();
     });
@@ -92,24 +80,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
-
-    if (evaluado) {
-      form.reset();
-      edadCalculada.textContent = "--";
-      pesoKgSpan.textContent = "0.00";
-      resultadoDiv.innerHTML = "";
-      contenedor.classList.remove("masculino", "femenino");
-      sexoButtons.forEach(btn => btn.classList.remove("selected"));
-      sexoInput.value = "";
-      fechaEval.value = hoy;
-      calcularEdad();
-      calcularPesoKg();
-      boton.textContent = "Evaluar";
-      boton.classList.remove("btn-limpiar");
-      boton.classList.add("btn-evaluar");
-      evaluado = false;
-      return;
-    }
 
     if (!sexoInput.value || !form.fechaNacimiento.value || !form.fechaEvaluacion.value || edadMesesFinal === null) {
       alert("❗ Todos los campos son obligatorios.");
@@ -143,35 +113,26 @@ document.addEventListener("DOMContentLoaded", () => {
           ${b.estado} (${b.referencia})
         </div>
       `).join("");
-
-      boton.textContent = "Limpiar";
-      boton.classList.remove("btn-evaluar");
-      boton.classList.add("btn-limpiar");
-      evaluado = true;
     } catch (err) {
       resultadoDiv.innerHTML = `<span style="color:red">❌ ${err.message}</span>`;
     }
   });
 
+  const botonBasura = document.getElementById("botonBasura");
+
+  botonBasura.addEventListener("click", () => {
+    form.reset();
+    edadCalculada.textContent = "--";
+    pesoKgSpan.textContent = "0.00";
+    resultadoDiv.innerHTML = "";
+    contenedor.classList.remove("masculino", "femenino");
+    sexoButtons.forEach(btn => btn.classList.remove("selected"));
+    sexoInput.value = "";
+    fechaEval.value = hoy;
+    calcularEdad();
+    calcularPesoKg();
+  });
+
   calcularEdad();
   calcularPesoKg();
-});
-
-const botonBasura = document.getElementById("botonBasura");
-
-botonBasura.addEventListener("click", () => {
-  form.reset();
-  edadCalculada.textContent = "--";
-  pesoKgSpan.textContent = "0.00";
-  resultadoDiv.innerHTML = "";
-  contenedor.classList.remove("masculino", "femenino");
-  sexoButtons.forEach(btn => btn.classList.remove("selected"));
-  sexoInput.value = "";
-  fechaEval.value = hoy;
-  calcularEdad();
-  calcularPesoKg();
-  boton.textContent = "Evaluar";
-  boton.classList.remove("btn-limpiar");
-  boton.classList.add("btn-evaluar");
-  evaluado = false;
 });
