@@ -1,0 +1,203 @@
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --azul: #007bff;
+  --azul-hover: #0056b3;
+  --rojo: #e53935;
+  --rojo-hover: #c62828;
+  --bg-form: #ffffff;
+  --fondo-masculino: #e6f0ff;
+  --fondo-femenino: #ffe6f0;
+}
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(to right, rgba(111, 253, 253, 0.64), rgba(242, 163, 190, 0.62));
+  margin: 0;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.container {
+  background: var(--bg-form);
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+  width: 100%;
+  max-width: 440px;
+  transition: background-color 0.3s ease;
+  overflow: hidden;
+}
+
+.container.femenino {
+  background-color: var(--fondo-femenino);
+}
+.container.masculino {
+  background-color: var(--fondo-masculino);
+}
+
+h1 {
+  font-size: 24px;
+  text-align: center;
+  margin-bottom: 24px;
+  color: #333;
+  word-wrap: break-word;
+}
+
+label {
+  display: block;
+  margin-top: 16px;
+  font-weight: 600;
+  color: #444;
+}
+
+input[type="number"],
+input[type="date"],
+input[type="text"] {
+  width: 100%;
+  padding: 12px;
+  margin-top: 6px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-size: 15px;
+  transition: border 0.3s ease;
+}
+
+input[type="number"]:focus,
+input[type="date"]:focus,
+input[type="text"]:focus {
+  border-color: var(--azul);
+  outline: none;
+}
+
+.fila, .fila-fechas {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.fila > input,
+.fila-fechas > input {
+  flex: 1 1 48%;
+}
+
+.fila-sexo {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 6px;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.btn-sexo {
+  flex: 1 1 48%;
+  padding: 12px;
+  background: #f5f5f5;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.05);
+  white-space: nowrap;
+  color: #000;
+}
+
+.btn-sexo.selected[data-sexo="M"] {
+  background-color: #2196f3;
+  color: #fff;
+}
+.btn-sexo.selected[data-sexo="F"] {
+  background-color: #e91e63;
+  color: #fff;
+}
+
+.edad-linea {
+  font-size: 14px;
+  margin-top: 5px;
+  color: #555;
+  word-wrap: break-word;
+}
+
+.peso-kg {
+  font-size: 13px;
+  color: #777;
+  margin-top: 5px;
+}
+
+button {
+  padding: 14px;
+  width: 100%;
+  border: none;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 12px;
+  cursor: pointer;
+  margin-top: 24px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.btn-evaluar {
+  background-color: var(--azul);
+}
+.btn-evaluar:hover {
+  background-color: var(--azul-hover);
+  transform: translateY(-2px);
+}
+.btn-limpiar {
+  background-color: var(--rojo);
+}
+.btn-limpiar:hover {
+  background-color: var(--rojo-hover);
+  transform: translateY(-2px);
+}
+
+.resultado {
+  margin-top: 25px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.bloque-resultado {
+  padding: 1rem;
+  border-radius: 12px;
+  font-weight: bold;
+  color: white;
+  overflow-wrap: break-word;
+}
+.bloque-resultado .titulo {
+  margin-bottom: 5px;
+  font-size: 15px;
+}
+
+.normal    { background-color: #4caf50; }
+.severo    { background-color: #6a1b9a; }
+.moderado  { background-color: #d32f2f; }
+.bajo      { background-color: #f44336; }
+.amarillo  { background-color: #fdd835; color: black; }
+.naranja   { background-color: #c59802; }
+.rosa      { background-color: #ff6702; }
+
+@media (max-width: 600px) {
+  .container {
+    border-radius: 0;
+    padding: 20px;
+  }
+
+  .fila-fechas > input {
+    flex: 1 1 100%; /* ✅ fechas en una sola columna */
+  }
+
+  .fila > input,
+  .fila-sexo > button {
+    flex: 1 1 48%; /* ✅ peso y sexo siguen en dos columnas */
+  }
+}
