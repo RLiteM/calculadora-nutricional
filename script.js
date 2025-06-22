@@ -71,6 +71,23 @@ document.addEventListener("DOMContentLoaded", () => {
     return "";
   }
 
+function mostrarBloqueResultado(idContenedor, titulo, estado, referencia, indicador) {
+  const claseColor = getColorClass("", estado);
+
+  document.getElementById(idContenedor).innerHTML = `
+    <div class="bloque-resultado ${claseColor}">
+      <a href="grafica.html?indicador=${indicador}" target="_blank" class="boton-grafica">
+        <span class="texto-boton">Ver Gráfica</span>
+        <img src="img/boton.png" alt="Gráfica" class="icono-boton" />
+      </a>
+      <div class="titulo">${titulo}</div>
+      <div class="texto-estado">${estado} (${referencia})</div>
+    </div>
+  `;
+}
+
+
+
   ["fechaNacimiento", "fechaEvaluacion", "libras", "onzas", "talla"].forEach(name => {
     form[name].addEventListener("input", () => {
       calcularEdad();
@@ -99,38 +116,15 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     try {
-      const result = await evaluarCompleto(data); 
+      const result = await evaluarCompleto(data);
 
-      const bloques = [
-        { titulo: "Peso para la Edad", estado: result.pesoEdad.estado, referencia: result.pesoEdad.referencia },
-        { titulo: "Talla para la Edad", estado: result.tallaEdad.estado, referencia: result.tallaEdad.referencia },
-        { titulo: "Peso para la Talla", estado: result.pesoTalla.estado, referencia: result.pesoTalla.referencia }
-      ];
+      mostrarBloqueResultado("resultadoPE", "Peso para la Edad", result.pesoEdad.estado, result.pesoEdad.referencia, "PE");
+      mostrarBloqueResultado("resultadoTE", "Talla para la Edad", result.tallaEdad.estado, result.tallaEdad.referencia, "TE");
+      mostrarBloqueResultado("resultadoPT", "Peso para la Talla", result.pesoTalla.estado, result.pesoTalla.referencia, "PT");
 
-      resultadoDiv.innerHTML = bloques.map(b => `
-        <div class='bloque-resultado ${getColorClass("", b.estado)}'>
-          <div class='titulo'>${b.titulo}</div>
-          ${b.estado} (${b.referencia})
-        </div>
-      `).join("");
     } catch (err) {
       resultadoDiv.innerHTML = `<span style="color:red">❌ ${err.message}</span>`;
     }
-  });
-
-  const botonBasura = document.getElementById("botonBasura");
-
-  botonBasura.addEventListener("click", () => {
-    form.reset();
-    edadCalculada.textContent = "--";
-    pesoKgSpan.textContent = "0.00";
-    resultadoDiv.innerHTML = "";
-    contenedor.classList.remove("masculino", "femenino");
-    sexoButtons.forEach(btn => btn.classList.remove("selected"));
-    sexoInput.value = "";
-    fechaEval.value = hoy;
-    calcularEdad();
-    calcularPesoKg();
   });
 
   calcularEdad();

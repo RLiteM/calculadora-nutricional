@@ -16,7 +16,9 @@ document.addEventListener("DOMContentLoaded", () => {
     form.reset();
     edadCalculada.textContent = "--";
     pesoKgSpan.textContent = "0.00";
-    resultadoDiv.innerHTML = "";
+    document.getElementById("resultadoPE").innerHTML = "";
+document.getElementById("resultadoTE").innerHTML = "";
+document.getElementById("resultadoPT").innerHTML = "";
     contenedor.classList.remove("masculino", "femenino");
     sexoButtons.forEach(btn => btn.classList.remove("selected"));
     sexoInput.value = "";
