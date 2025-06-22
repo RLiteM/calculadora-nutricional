@@ -1,4 +1,4 @@
-const RUTADATA = "data/"; 
+const RUTADATA = "data/";
 
 function fileName(indicador, sexo, edadMeses = 0) {
   indicador = indicador.toUpperCase();
@@ -11,6 +11,8 @@ function fileName(indicador, sexo, edadMeses = 0) {
     case "TE": file = `${RUTADATA}TE_${sexo}_${edadMeses < 24 ? "0_2" : "2_5"}.csv`; break;
     default: throw new Error("Indicador inválido (usa PE | PT | TE)");
   }
+
+  console.log("📄 Archivo CSV seleccionado:", file);
   return file;
 }
 
@@ -27,7 +29,10 @@ export async function cargarTabla(indicador, sexo, edadMeses = 0) {
     const [cab, ...rows] = txt.trim().split("\n");
     const columnas = cab.replace(/\uFEFF/g, "").split(";").map(c => c.trim().replace(/\s+/g, ''));
 
-    if (rows.length === 0) return [];
+    if (rows.length === 0) {
+      console.warn("⚠️ El archivo está vacío:", archivo);
+      return [];
+    }
 
     const parsedData = rows.map(r => {
       const celdas = r.split(";").map(c => c.trim().replace(",", "."));
@@ -42,20 +47,13 @@ export async function cargarTabla(indicador, sexo, edadMeses = 0) {
       return fila;
     });
 
+    console.log("🔍 Primeras 3 filas de la tabla:");
+    console.table(parsedData.slice(0, 3));
+
     return parsedData;
 
   } catch (error) {
-    throw error;
+    console.error("❌ Error al cargar tabla:", error);
+    return [];
   }
-}
-
-export function filaMasCercana(tabla, eje, valor) {
-  if (!tabla || tabla.length === 0) return null;
-
-  return tabla.reduce((a, b) => {
-    const valA = parseFloat(a[eje]);
-    const valB = parseFloat(b[eje]);
-    if (isNaN(valA) || isNaN(valB)) return a;
-    return Math.abs(valB - valor) < Math.abs(valA - valor) ? b : a;
-  });
 }

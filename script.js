@@ -74,17 +74,54 @@ document.addEventListener("DOMContentLoaded", () => {
 function mostrarBloqueResultado(idContenedor, titulo, estado, referencia, indicador) {
   const claseColor = getColorClass("", estado);
 
-  document.getElementById(idContenedor).innerHTML = `
-    <div class="bloque-resultado ${claseColor}">
-      <a href="grafica.html?indicador=${indicador}" target="_blank" class="boton-grafica">
-        <span class="texto-boton">Ver Gráfica</span>
-        <img src="img/boton.png" alt="Gráfica" class="icono-boton" />
-      </a>
-      <div class="titulo">${titulo}</div>
-      <div class="texto-estado">${estado} (${referencia})</div>
-    </div>
+  const div = document.createElement("div");
+  div.className = `bloque-resultado ${claseColor}`;
+
+  const enlace = document.createElement("a");
+  enlace.href = "#";
+  enlace.className = "boton-grafica";
+  enlace.innerHTML = `
+    <span class="texto-boton">Ver Gráfica</span>
+    <img src="img/boton.png" alt="Gráfica" class="icono-boton" />
   `;
+
+  enlace.addEventListener("click", e => {
+    e.preventDefault();
+
+    const talla = parseFloat(form.talla.value) || 0;
+    const datos = {
+      edadMeses: edadMesesFinal,
+      pesoKg: parseFloat(pesoKgCalculado.toFixed(2)),
+      talla,
+      sexo: sexoInput.value,
+      indicador
+    };
+
+    console.log("📦 Guardando en localStorage:", datos);
+    localStorage.setItem("datosGrafica", JSON.stringify(datos));
+
+    window.open("grafica.html", "_blank");
+  });
+
+  // ✅ Crear elementos adicionales sin innerHTML destructivo
+  const tituloDiv = document.createElement("div");
+  tituloDiv.className = "titulo";
+  tituloDiv.textContent = titulo;
+
+  const estadoDiv = document.createElement("div");
+  estadoDiv.className = "texto-estado";
+  estadoDiv.textContent = `${estado} (${referencia})`;
+
+  div.appendChild(enlace);
+  div.appendChild(tituloDiv);
+  div.appendChild(estadoDiv);
+
+  const contenedor = document.getElementById(idContenedor);
+  contenedor.innerHTML = ""; // limpiar resultado anterior
+  contenedor.appendChild(div);
 }
+
+
 
 
 

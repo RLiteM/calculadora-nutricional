@@ -1,125 +1,151 @@
-import { cargarTabla } from './lectortabla.js'; // Asegúrate que esté correcto
+import { cargarTabla } from './lectortabla.js';
 
-const ZCOLS  = ["-3SD","-2SD","-1SD","0SD","1SD","2SD","3SD"];
-const COLORS = ["#8b0000","#e60000","#ffa500","#008000","#00bfff",
-                "#4169e1","#4b0082"];
+const ZCOLS = ["-3SD", "-2SD", "-1SD", "0SD", "1SD", "2SD", "3SD"];
+const COLORS = ["#8b0000", "#e60000", "#ffa500", "#008000", "#00bfff", "#4169e1", "#4b0082"];
+let chart = null;
 
-const sexoSel = document.getElementById("sexo");
-const edadIn  = document.getElementById("edadMeses");
-const canvas  = document.getElementById("grafica");
-let   chart;
+const canvas = document.getElementById("grafica");
+const titulo = document.getElementById("tituloGrafica");
 
-document.getElementById("btnPE").onclick = () => dibujar("PE");
-document.getElementById("btnPT").onclick = () => dibujar("PT");
-document.getElementById("btnTE").onclick = () => dibujar("TE");
+// Leer datos desde localStorage
+const datos = JSON.parse(localStorage.getItem("datosGrafica") || "{}");
 
-async function dibujar(indicador){
-  const sexo = sexoSel.value;
-  const ref  = +edadIn.value || 0;
+if (!datos.indicador || !datos.sexo || typeof datos.edadMeses !== "number") {
+  titulo.textContent = "❌ Datos insuficientes para graficar";
+  throw new Error("Faltan datos necesarios para graficar.");
+}
+
+console.log("📦 Datos recibidos:", datos);
+
+titulo.textContent = `Curva ${datos.indicador} – ${datos.sexo === "M" ? "Niño" : "Niña"}`;
+dibujar(datos.indicador, datos.sexo, datos.edadMeses, datos);
+
+async function dibujar(indicador, sexo, ref, puntoUsuario) {
+
+
   const tabla = await cargarTabla(indicador, sexo, ref);
 
   if (!tabla || tabla.length === 0) {
-      console.error("No se pudieron cargar datos o la tabla está vacía.");
-      if (chart) chart.destroy();
-      return;
+    return;
   }
 
-  const colX = Object.keys(tabla[0]).find(k =>
-                    /meses|mes|cm/i.test(k));
-
+  const colX = Object.keys(tabla[0]).find(k => /meses|mes|cm/i.test(k));
   if (!colX) {
-      console.error("No se encontró una columna de referencia para el eje X (meses o cm).");
-      if (chart) chart.destroy();
-      return;
+    return;
   }
 
+
+
+  // Interpolación
   const STEP = 100;
   const interp = [];
-  for (let i = 0; i < tabla.length - 1; i++){
-    const a = tabla[i], b = tabla[i+1];
-    const startX = parseFloat(a[colX]);
-    const endX = parseFloat(b[colX]);
 
-    for (let j = 0; j < STEP; j++){
+  for (let i = 0; i < tabla.length - 1; i++) {
+    const a = tabla[i], b = tabla[i + 1];
+    const startX = parseFloat(a[colX]), endX = parseFloat(b[colX]);
+
+    for (let j = 0; j < STEP; j++) {
       const t = j / STEP;
-      const currentX = startX + (endX - startX) * t;
-      const f = { x: currentX };
+      const x = startX + (endX - startX) * t;
+      const f = { x };
       ZCOLS.forEach(z => {
-          const valA = parseFloat(a[z]);
-          const valB = parseFloat(b[z]);
-          f[z] = valA + (valB - valA) * t;
+        const valA = parseFloat(a[z]);
+        const valB = parseFloat(b[z]);
+        f[z] = valA + (valB - valA) * t;
       });
       interp.push(f);
     }
   }
-  interp.push({ x: parseFloat(tabla.at(-1)[colX]), ...Object.fromEntries(ZCOLS.map(z => [z, parseFloat(tabla.at(-1)[z])])) });
 
-  const ds = ZCOLS.map((z,i)=>({
-    label:z,
-    data :interp.map(p=>({x:p.x,y:p[z]})),
-    borderColor:COLORS[i],
-    borderDash:(i===0 || i===6) ? [6,4] : undefined,
-    tension:.4,
-    fill:false,
-    pointRadius:0
+  interp.push({
+    x: parseFloat(tabla.at(-1)[colX]),
+    ...Object.fromEntries(ZCOLS.map(z => [z, parseFloat(tabla.at(-1)[z])]))
+  });
+
+
+  const ds = ZCOLS.map((z, i) => ({
+    label: z,
+    data: interp.map(p => ({ x: p.x, y: p[z] })),
+    borderColor: COLORS[i],
+    borderDash: (i === 0 || i === 6) ? [6, 4] : undefined,
+    tension: 0.4,
+    fill: false,
+    pointRadius: 0
   }));
 
-  let scaleXOptions = { type:"linear", title:{display:true,text:colX} };
-  let scaleYOptions = { title:{display:true} };
+  // Punto evaluado
+  const punto = {
+    label: "Evaluado",
+    data: [{
+      x: (indicador === "PE" || indicador === "TE") ? puntoUsuario.edadMeses : puntoUsuario.talla,
+      y: (indicador === "TE") ? puntoUsuario.talla : puntoUsuario.pesoKg
+    }],
+    borderColor: "#000",
+    backgroundColor: "#000",
+    pointStyle: "circle",
+    pointRadius: 6,
+    pointHoverRadius: 7,
+    showLine: false
+  };
 
-  if (indicador === "PE" || indicador === "PT") {
-      scaleYOptions.title.text = "Peso (kg)";
-      scaleYOptions.min = 0;
-      scaleYOptions.ticks = { stepSize: 2 };
-      scaleXOptions.title.text = (indicador === "PE") ? "Edad (meses)" : "Talla (cm)";
-      scaleXOptions.ticks = { stepSize: 5 };
-  } else if (indicador === "TE") {
-      scaleYOptions.title.text = "Talla (cm)";
-      scaleYOptions.min = 40;
-      scaleYOptions.ticks = { stepSize: 5 };
-      scaleXOptions.title.text = "Edad (meses)";
-      scaleXOptions.ticks = { stepSize: 5 };
-  }
+  ds.push(punto);
 
-  const minXData = Math.min(...interp.map(p => p.x));
-  const maxXData = Math.max(...interp.map(p => p.x));
-  scaleXOptions.min = Math.floor(minXData / (scaleXOptions.ticks.stepSize || 1)) * (scaleXOptions.ticks.stepSize || 1);
-  scaleXOptions.max = Math.ceil(maxXData / (scaleXOptions.ticks.stepSize || 1)) * (scaleXOptions.ticks.stepSize || 1);
+  // Configurar escalas
+  const scaleX = {
+    type: "linear",
+    title: {
+      display: true,
+      text: (indicador === "PE") ? "Edad (meses)" :
+            (indicador === "PT") ? "Talla (cm)" :
+            "Edad (meses)"
+    },
+    ticks: { stepSize: 5 }
+  };
+
+  const scaleY = {
+    title: {
+      display: true,
+      text: (indicador === "TE") ? "Talla (cm)" : "Peso (kg)"
+    },
+    min: (indicador === "TE") ? 40 : 0,
+    ticks: { stepSize: 2 }
+  };
+
+  scaleX.min = Math.floor(Math.min(...interp.map(p => p.x)) / 5) * 5;
+  scaleX.max = Math.ceil(Math.max(...interp.map(p => p.x)) / 5) * 5;
 
   if (chart) chart.destroy();
-  chart = new Chart(canvas,{
-    type:"line",
-    data:{datasets:ds},
-    options:{
-      responsive:true,
-      plugins:{
-          title:{
-              display:true,
-              text:`Curva ${indicador} – ${sexo==="M"?"Niño":"Niña"}`
-          },
-          tooltip: {
-              mode: 'nearest',
-              intersect: true,
-              callbacks: {
-                  title: function(tooltipItems) {
-                      const xValue = parseFloat(tooltipItems[0].label);
-                      const xUnit = colX.toLowerCase().includes('meses') || colX.toLowerCase().includes('mes') ? ' meses' : ' cm';
-                      return xValue.toFixed(1) + xUnit;
-                  },
-                  label: function(tooltipItem) {
-                      const yUnit = (indicador === "TE") ? " cm" : " kg";
-                      return `${tooltipItem.dataset.label}: ${tooltipItem.formattedValue}${yUnit}`;
-                  }
-              }
-          }
-      },
-      hover: {
+
+  chart = new Chart(canvas, {
+    type: "line",
+    data: { datasets: ds },
+    options: {
+      responsive: true,
+      plugins: {
+        title: {
+          display: true,
+          text: `Curva ${indicador} – ${sexo === "M" ? "Niño" : "Niña"}`
+        },
+        tooltip: {
           mode: 'nearest',
-          intersect: true
+          intersect: true,
+          callbacks: {
+            title: (items) => {
+              const x = parseFloat(items[0].label);
+              const unidad = colX.toLowerCase().includes("mes") ? " meses" : " cm";
+              return `${x.toFixed(1)}${unidad}`;
+            },
+            label: (item) => {
+              const unidadY = (indicador === "TE") ? " cm" : " kg";
+              return `${item.dataset.label}: ${item.formattedValue}${unidadY}`;
+            }
+          }
+        }
       },
-      scales:{
-        x: scaleXOptions,
-        y: scaleYOptions
+      hover: { mode: 'nearest', intersect: true },
+      scales: {
+        x: scaleX,
+        y: scaleY
       }
     }
   });
