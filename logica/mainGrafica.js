@@ -3,13 +3,28 @@ import { cargarTabla } from './lectortabla.js';
 const ZCOLS = ["-3SD", "-2SD", "-1SD", "0SD", "1SD", "2SD", "3SD"];
 const COLORS = ["#8b0000", "#e60000", "#ffa500", "#008000", "#00bfff", "#4169e1", "#4b0082"];
 let chart = null;
+let originalZoom = null;
 
 const canvas = document.getElementById("grafica");
 const titulo = document.getElementById("tituloGrafica");
-const btnReset = document.getElementById("btnResetZoom");
 
-btnReset?.addEventListener("click", () => {
-  chart?.resetZoom();
+document.querySelectorAll(".botones button").forEach(btn => {
+  btn.addEventListener("click", () => {
+    if (!chart) return;
+
+    if (btn.textContent.includes("Zoom +")) zoomAlPunto(1.2);
+    else if (btn.textContent.includes("Zoom -")) zoomAlPunto(0.8);
+    else if (btn.id === "btnResetZoom" && originalZoom) {
+      chart.options.scales.x.min = originalZoom.xMin;
+      chart.options.scales.x.max = originalZoom.xMax;
+      chart.options.scales.y.min = originalZoom.yMin;
+      chart.options.scales.y.max = originalZoom.yMax;
+
+      if (chart.resetZoom) chart.resetZoom();
+
+      chart.update();
+    }
+  });
 });
 
 const datos = JSON.parse(localStorage.getItem("datosGrafica") || "{}");
@@ -20,13 +35,32 @@ if (!datos.indicador || !datos.sexo || typeof datos.edadMeses !== "number") {
 }
 
 console.log("📦 Datos recibidos:", datos);
-
 titulo.textContent = `Curva ${datos.indicador} – ${datos.sexo === "M" ? "Niño" : "Niña"}`;
 dibujar(datos.indicador, datos.sexo, datos.edadMeses, datos);
 
+function zoomAlPunto(factor = 1.2) {
+  if (!chart) return;
+
+  const punto = chart.data.datasets.find(d => d.label === "Evaluado")?.data[0];
+  if (!punto) return;
+
+  const xRange = chart.options.scales.x;
+  const yRange = chart.options.scales.y;
+
+  const xSpan = (xRange.max - xRange.min) / factor;
+  const ySpan = (yRange.max - yRange.min) / factor;
+
+  xRange.min = punto.x - xSpan / 2;
+  xRange.max = punto.x + xSpan / 2;
+  yRange.min = punto.y - ySpan / 2;
+  yRange.max = punto.y + ySpan / 2;
+
+  chart.update();
+}
+
 async function dibujar(indicador, sexo, ref, puntoUsuario) {
   const tabla = await cargarTabla(indicador, sexo, ref);
-  if (!tabla || tabla.length === 0) return;
+  if (!tabla?.length) return;
 
   const colX = Object.keys(tabla[0]).find(k => /meses|mes|cm/i.test(k));
   if (!colX) return;
@@ -87,8 +121,7 @@ async function dibujar(indicador, sexo, ref, puntoUsuario) {
     title: {
       display: true,
       text: (indicador === "PE") ? "Edad (meses)" :
-            (indicador === "PT") ? "Talla (cm)" :
-            "Edad (meses)"
+            (indicador === "PT") ? "Talla (cm)" : "Edad (meses)"
     },
     ticks: { stepSize: 5 }
   };
@@ -104,6 +137,13 @@ async function dibujar(indicador, sexo, ref, puntoUsuario) {
 
   scaleX.min = Math.floor(Math.min(...interp.map(p => p.x)) / 5) * 5;
   scaleX.max = Math.ceil(Math.max(...interp.map(p => p.x)) / 5) * 5;
+
+  originalZoom = {
+    xMin: scaleX.min,
+    xMax: scaleX.max,
+    yMin: scaleY.min,
+    yMax: scaleY.max
+  };
 
   if (chart) chart.destroy();
 
@@ -151,14 +191,8 @@ async function dibujar(indicador, sexo, ref, puntoUsuario) {
       },
       hover: { mode: 'nearest', intersect: true },
       scales: {
-        x: {
-          ...scaleX,
-          ticks: { precision: 2 }
-        },
-        y: {
-          ...scaleY,
-          ticks: { precision: 2 }
-        }
+        x: { ...scaleX, ticks: { precision: 2 } },
+        y: { ...scaleY, ticks: { precision: 2 } }
       }
     }
   });
