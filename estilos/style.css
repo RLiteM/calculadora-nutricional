@@ -1,96 +1,175 @@
 body {
-  font-family: sans-serif;
-  margin: 0;
-  padding: 0;
-  background-color: #f5f5f5;
-  width: 100vw;
-  height: 100vh;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  position: relative;
+    font-family: sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f5f5f5;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
 }
 
 h2 {
-  margin: 1rem 0 0.5rem;
-  text-align: center;
-  font-size: 1.4rem;
-  z-index: 10;
-  position: relative;
+    margin: 1rem 0 0.5rem;
+    text-align: center;
+    font-size: 1.4rem;
+    z-index: 10;
+    position: relative;
+    color: #333; /* Color de texto más oscuro para mayor contraste */
 }
 
 .canvas-wrapper {
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
 }
 
 canvas {
-  max-width: 100%;
-  max-height: 100%;
-  background: white;
-  border: 1px solid #ccc;
-  touch-action: none;
-  z-index: 5;
+    max-width: 100%;
+    max-height: 100%;
+    background: white;
+    border: 1px solid #ccc;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra suave para la gráfica */
+    touch-action: none;
+    z-index: 5;
+    border-radius: 10px; /* Bordes redondeados para la gráfica */
 }
 
 /* Botones flotantes */
 .botones {
-  position: fixed;
-  bottom: 1rem;
-  right: 1rem;
-  z-index: 9999;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column; /* Apila los botones verticalmente por defecto */
+    gap: 0.5rem;
+    background-color: rgba(255, 255, 255, 0.9); /* Fondo semitransparente para los botones */
+    padding: 0.8rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15); /* Sombra para el contenedor de botones */
 }
 
 .botones button {
-  padding: 0.6rem 1.2rem;
-  font-size: 1rem;
-  background-color: #008000;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
+    padding: 0.8rem 1.5rem; /* Un poco más de padding para hacerlos más grandes y fáciles de tocar */
+    font-size: 1.1rem; /* Fuente ligeramente más grande */
+    background-color: #007bff; /* Color azul más estándar para botones */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Transiciones suaves */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Sombra para cada botón */
 }
 
 .botones button:hover {
-  background-color: #006400;
+    background-color: #0056b3; /* Tono más oscuro al pasar el ratón */
+    transform: translateY(-2px); /* Pequeño efecto de elevación al pasar el ratón */
 }
 
-@media screen and (orientation: portrait) and (pointer: coarse) {
-  .canvas-wrapper {
-    transform: rotate(90deg);
-    transform-origin: center;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 100vh;
-    height: 100vw;
-    translate: -50% -50%;
-  }
+.botones button:active {
+    background-color: #004085; /* Tono aún más oscuro al hacer clic */
+    transform: translateY(0); /* Vuelve a la posición original al hacer clic */
+}
 
-  h2 {
-    position: fixed;
-    top: 1rem;
-    left: 0;
-    right: 0;
-    background: rgba(245, 245, 245, 0.8);
-    padding: 0.5rem;
-    font-size: 1.4rem;
-    z-index: 9998;
-  }
+/* Media query para dispositivos en modo vertical (portrait) y táctiles */
+@media screen and (orientation: portrait) and (max-width: 768px) {
+    .canvas-wrapper {
+        /* Mantiene la rotación para la gráfica, pero ajusta la posición */
+        transform: rotate(90deg);
+        transform-origin: center;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 100vh; /* Intercambia width y height para la rotación */
+        height: 100vw;
+        translate: -50% -50%;
+    }
 
-  .botones {
-    position: fixed;
-    top: 1rem;
-    left: 1rem;
-    flex-direction: column;
-  }
+    h2 {
+        position: fixed;
+        top: 0.5rem; /* Ajusta la posición para que no choque */
+        left: 0;
+        right: 0;
+        background: rgba(245, 245, 245, 0.95); /* Fondo más opaco para el título */
+        padding: 0.7rem;
+        font-size: 1.2rem; /* Tamaño de fuente ligeramente más pequeño para el título */
+        z-index: 9998;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05); /* Sombra suave para el título */
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+    }
+
+    .botones {
+        position: fixed;
+        bottom: auto; /* Desactiva bottom */
+        top: 0.5rem; /* Coloca los botones en la parte superior */
+        right: 0.5rem; /* Ajusta a la derecha */
+        left: auto; /* Desactiva left */
+        flex-direction: row; /* Coloca los botones horizontalmente */
+        gap: 0.3rem; /* Espaciado más compacto entre botones */
+        padding: 0.5rem;
+        background-color: rgba(255, 255, 255, 0.95); /* Fondo para los botones */
+        border-top-right-radius: 10px;
+        border-bottom-left-radius: 10px;
+    }
+
+    .botones button {
+        padding: 0.6rem 1rem; /* Padding más pequeño para botones en modo horizontal */
+        font-size: 0.9rem; /* Fuente más pequeña */
+    }
+}
+
+/* Media query para tabletas en modo vertical (portrait) */
+@media screen and (min-width: 769px) and (orientation: portrait) {
+    .botones {
+        flex-direction: row; /* En tabletas, pueden ir en fila en la parte superior */
+        top: 1rem;
+        left: 50%;
+        transform: translateX(-50%);
+        bottom: auto;
+        right: auto;
+        width: auto; /* Ancho automático para centrar */
+    }
+
+    .canvas-wrapper {
+        transform: none; /* No rotar en tabletas */
+        width: 95vw;
+        height: 80vh;
+        position: relative; /* Vuelve a la posición relativa */
+        translate: 0 0; /* Reinicia translate */
+    }
+
+    h2 {
+        position: relative; /* Vuelve a la posición relativa */
+        top: auto;
+        background: none;
+        box-shadow: none;
+        border-radius: 0;
+    }
+}
+
+/* Media query para pantallas más grandes (desktop) */
+@media screen and (min-width: 1024px) {
+    .botones {
+        flex-direction: row; /* En desktop, pueden ir en fila en la parte superior */
+        top: 1rem;
+        left: 50%;
+        transform: translateX(-50%);
+        bottom: auto;
+        right: auto;
+        width: auto;
+    }
+
+    .canvas-wrapper {
+        width: 80vw; /* Ocupa menos ancho en desktop */
+        height: 70vh; /* Ocupa menos alto en desktop */
+    }
 }
