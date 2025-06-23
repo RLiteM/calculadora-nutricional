@@ -4,7 +4,13 @@
   <meta charset="UTF-8">
   <title>Curva Nutricional OMS</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Plugin de zoom para Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.1/dist/chartjs-plugin-zoom.min.js"></script>
+
   <style>
     body {
       font-family: sans-serif;
@@ -22,6 +28,10 @@
       max-width: 100%;
       height: auto;
     }
+
+    .botones {
+      margin-top: 1rem;
+    }
   </style>
 </head>
 <body>
@@ -30,6 +40,12 @@
 
   <canvas id="grafica" width="640" height="400"></canvas>
 
+  <!-- Botón para resetear el zoom -->
+  <div class="botones">
+    <button onclick="chart?.resetZoom()">🔄 Reset Zoom</button>
+  </div>
+
+  <!-- Script principal -->
   <script type="module" src="./logica/mainGrafica.js"></script>
 
 </body>

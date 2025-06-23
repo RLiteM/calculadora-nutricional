@@ -21,23 +21,14 @@ titulo.textContent = `Curva ${datos.indicador} – ${datos.sexo === "M" ? "Niño
 dibujar(datos.indicador, datos.sexo, datos.edadMeses, datos);
 
 async function dibujar(indicador, sexo, ref, puntoUsuario) {
-
-
   const tabla = await cargarTabla(indicador, sexo, ref);
-
-  if (!tabla || tabla.length === 0) {
-    return;
-  }
+  if (!tabla || tabla.length === 0) return;
 
   const colX = Object.keys(tabla[0]).find(k => /meses|mes|cm/i.test(k));
-  if (!colX) {
-    return;
-  }
-
-
+  if (!colX) return;
 
   // Interpolación
-  const STEP = 100;
+  const STEP = 200;
   const interp = [];
 
   for (let i = 0; i < tabla.length - 1; i++) {
@@ -61,7 +52,6 @@ async function dibujar(indicador, sexo, ref, puntoUsuario) {
     x: parseFloat(tabla.at(-1)[colX]),
     ...Object.fromEntries(ZCOLS.map(z => [z, parseFloat(tabla.at(-1)[z])]))
   });
-
 
   const ds = ZCOLS.map((z, i) => ({
     label: z,
@@ -90,7 +80,7 @@ async function dibujar(indicador, sexo, ref, puntoUsuario) {
 
   ds.push(punto);
 
-  // Configurar escalas
+  // Configurar escalas dinámicas
   const scaleX = {
     type: "linear",
     title: {
@@ -121,10 +111,11 @@ async function dibujar(indicador, sexo, ref, puntoUsuario) {
     data: { datasets: ds },
     options: {
       responsive: true,
+      animation: false,
       plugins: {
         title: {
           display: true,
-          text: `Curva ${indicador} – ${sexo === "M" ? "Niño" : "Niña"}`
+          text: `Curva ${indicador} – ${sexo === "M" ? "Niño" : "Niña"} (OMS)`
         },
         tooltip: {
           mode: 'nearest',
@@ -133,19 +124,40 @@ async function dibujar(indicador, sexo, ref, puntoUsuario) {
             title: (items) => {
               const x = parseFloat(items[0].label);
               const unidad = colX.toLowerCase().includes("mes") ? " meses" : " cm";
-              return `${x.toFixed(1)}${unidad}`;
+              return `${x.toFixed(2)}${unidad}`;
             },
             label: (item) => {
               const unidadY = (indicador === "TE") ? " cm" : " kg";
               return `${item.dataset.label}: ${item.formattedValue}${unidadY}`;
             }
           }
+        },
+        zoom: {
+          zoom: {
+            wheel: { enabled: true },
+            pinch: { enabled: true },
+            mode: 'xy'
+          },
+          pan: {
+            enabled: true,
+            mode: 'xy'
+          },
+          limits: {
+            x: { min: scaleX.min, max: scaleX.max },
+            y: { min: scaleY.min, max: scaleY.max }
+          }
         }
       },
       hover: { mode: 'nearest', intersect: true },
       scales: {
-        x: scaleX,
-        y: scaleY
+        x: {
+          ...scaleX,
+          ticks: { precision: 2 }
+        },
+        y: {
+          ...scaleY,
+          ticks: { precision: 2 }
+        }
       }
     }
   });
