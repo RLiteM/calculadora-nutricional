@@ -7,7 +7,6 @@ let chart = null;
 const canvas = document.getElementById("grafica");
 const titulo = document.getElementById("tituloGrafica");
 
-// Leer datos desde localStorage
 const datos = JSON.parse(localStorage.getItem("datosGrafica") || "{}");
 
 if (!datos.indicador || !datos.sexo || typeof datos.edadMeses !== "number") {
@@ -27,8 +26,7 @@ async function dibujar(indicador, sexo, ref, puntoUsuario) {
   const colX = Object.keys(tabla[0]).find(k => /meses|mes|cm/i.test(k));
   if (!colX) return;
 
-  // Interpolación
-  const STEP = 200;
+  const STEP = 500;
   const interp = [];
 
   for (let i = 0; i < tabla.length - 1; i++) {
@@ -58,12 +56,11 @@ async function dibujar(indicador, sexo, ref, puntoUsuario) {
     data: interp.map(p => ({ x: p.x, y: p[z] })),
     borderColor: COLORS[i],
     borderDash: (i === 0 || i === 6) ? [6, 4] : undefined,
-    tension: 0.4,
+    tension: 0.8,
     fill: false,
     pointRadius: 0
   }));
 
-  // Punto evaluado
   const punto = {
     label: "Evaluado",
     data: [{
@@ -80,7 +77,6 @@ async function dibujar(indicador, sexo, ref, puntoUsuario) {
 
   ds.push(punto);
 
-  // Configurar escalas dinámicas
   const scaleX = {
     type: "linear",
     title: {
