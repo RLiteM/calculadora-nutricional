@@ -6,6 +6,11 @@ let chart = null;
 
 const canvas = document.getElementById("grafica");
 const titulo = document.getElementById("tituloGrafica");
+const btnReset = document.getElementById("btnResetZoom");
+
+btnReset?.addEventListener("click", () => {
+  chart?.resetZoom();
+});
 
 const datos = JSON.parse(localStorage.getItem("datosGrafica") || "{}");
 
