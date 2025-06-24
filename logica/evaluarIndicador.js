@@ -88,7 +88,7 @@ export async function evaluarIndicador(tipo, archivo, variable, valorUsuario, va
 
 function interpretarZScore(indicador, z, edadMeses = -1) {
   if (indicador === "PE") {
-    if (z < -2 && edadMeses >= 0 && edadMeses <= 5) return "Riesgo Nutricional";
+    if (z <= -2 && edadMeses >= 0 && edadMeses <= 5) return "Riesgo Nutricional";
     if (z <= -3) return "Peso Bajo Severo";
     if (z === -2) return "Peso Bajo Moderado";
     return "Normal";
