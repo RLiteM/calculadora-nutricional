@@ -103,7 +103,6 @@ function mostrarBloqueResultado(idContenedor, titulo, estado, referencia, indica
     window.open("grafica.html", "_blank");
   });
 
-  // ✅ Crear elementos adicionales sin innerHTML destructivo
   const tituloDiv = document.createElement("div");
   tituloDiv.className = "titulo";
   tituloDiv.textContent = titulo;
@@ -117,7 +116,7 @@ function mostrarBloqueResultado(idContenedor, titulo, estado, referencia, indica
   div.appendChild(estadoDiv);
 
   const contenedor = document.getElementById(idContenedor);
-  contenedor.innerHTML = ""; // limpiar resultado anterior
+  contenedor.innerHTML = ""; 
   contenedor.appendChild(div);
 }
 
