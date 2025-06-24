@@ -60,7 +60,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return "severo";
     if (estado.includes("retardo de crecimiento crónico moderado") || estado.includes("desnutrición aguda moderada") || estado.includes("peso bajo moderado") || estado.includes("retardo de crecimiento moderado"))
       return "moderado";
-    if (estado.includes("tendencia a la baja"))
+    if (estado.includes("tendencia a la baja") || estado.includes("riesgo nutricional"))
       return "amarillo";
     if (estado.includes("normal"))
       return "normal";
