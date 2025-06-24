@@ -85,24 +85,6 @@ function mostrarBloqueResultado(idContenedor, titulo, estado, referencia, indica
     <img src="img/boton.png" alt="Gráfica" class="icono-boton" />
   `;
 
-  enlace.addEventListener("click", e => {
-    e.preventDefault();
-
-    const talla = parseFloat(form.talla.value) || 0;
-    const datos = {
-      edadMeses: edadMesesFinal,
-      pesoKg: parseFloat(pesoKgCalculado.toFixed(2)),
-      talla,
-      sexo: sexoInput.value,
-      indicador
-    };
-
-    console.log("📦 Guardando en localStorage:", datos);
-    localStorage.setItem("datosGrafica", JSON.stringify(datos));
-
-    window.open("grafica.html", "_blank");
-  });
-
   const tituloDiv = document.createElement("div");
   tituloDiv.className = "titulo";
   tituloDiv.textContent = titulo;
@@ -111,17 +93,37 @@ function mostrarBloqueResultado(idContenedor, titulo, estado, referencia, indica
   estadoDiv.className = "texto-estado";
   estadoDiv.textContent = `${estado} (${referencia})`;
 
+  enlace.addEventListener("click", e => {
+    e.preventDefault();
+
+    const talla = parseFloat(form.talla.value) || 0;
+
+    const textoZ = estadoDiv.textContent;
+    const match = textoZ.match(/\(([^)]+)\)/);
+    const zScore = match ? parseFloat(match[1]) : null;
+
+    const datos = {
+      edadMeses: edadMesesFinal,
+      pesoKg: parseFloat(pesoKgCalculado.toFixed(2)),
+      talla,
+      sexo: sexoInput.value,
+      indicador,
+      z: zScore 
+    };
+
+    localStorage.setItem("datosGrafica", JSON.stringify(datos));
+
+    window.open("grafica.html", "_blank");
+  });
+
   div.appendChild(enlace);
   div.appendChild(tituloDiv);
   div.appendChild(estadoDiv);
 
   const contenedor = document.getElementById(idContenedor);
-  contenedor.innerHTML = ""; 
+  contenedor.innerHTML = "";
   contenedor.appendChild(div);
 }
-
-
-
 
 
   ["fechaNacimiento", "fechaEvaluacion", "libras", "onzas", "talla"].forEach(name => {
