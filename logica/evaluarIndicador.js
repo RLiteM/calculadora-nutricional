@@ -56,12 +56,37 @@ export async function evaluarIndicador(tipo, archivo, variable, valorUsuario, va
 
   const estado = interpretarZScore(tipo, z, edadMeses);
 
-  const referencia = z <= -3 ? "-3SD" : z >= 3 ? "3SD" : columnas[z + 3] ?? "0SD";
+  // 🔁 Interpolación para reemplazar "referencia" por zScoreReal
+  let zScoreReal = null;
+  for (let i = 0; i < valoresZ.length - 1; i++) {
+    const val1 = valoresZ[i];
+    const val2 = valoresZ[i + 1];
+    const z1 = i - 3;
+    if (valorComparar >= val1 && valorComparar <= val2) {
+      zScoreReal = z1 + ((valorComparar - val1) / (val2 - val1));
+      // 📋 Log de depuración
+      console.log("🔍 Interpolación Z:");
+      console.log(`   valorComparar: ${valorComparar}`);
+      console.log(`   Entre val1: ${val1} (z = ${z1}) y val2: ${val2} (z = ${z1 + 1})`);
+      console.log(`   Resultado zScoreReal: ${zScoreReal.toFixed(4)}`);
+      break;
+    }
+  }
+  if (zScoreReal === null) {
+    if (valorComparar < valoresZ[0]) zScoreReal = -3.5;
+    else if (valorComparar > valoresZ[valoresZ.length - 1]) zScoreReal = 3.5;
 
+    // 📋 Log si está fuera de rango
+    console.log("⚠️ valorComparar fuera de rango:");
+    console.log(`   valorComparar: ${valorComparar}`);
+    console.log(`   zScoreReal forzado: ${zScoreReal}`);
+  }
+
+  // ✅ Retornar el zScoreReal dentro de "referencia"
   return {
     zScoreAproximado: z,
     estado,
-    referencia
+    referencia: parseFloat(zScoreReal.toFixed(2))
   };
 }
 
