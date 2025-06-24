@@ -28,24 +28,38 @@ document.addEventListener("DOMContentLoaded", () => {
     })
   );
 
-  function calcularEdad() {
-    const fn = new Date(form.fechaNacimiento.value);
-    const fe = new Date(form.fechaEvaluacion.value);
-    if (!form.fechaNacimiento.value || !form.fechaEvaluacion.value || isNaN(fn) || isNaN(fe)) {
-      edadCalculada.textContent = "--";
-      edadMesesFinal = null;
-      return;
-    }
-    let años = fe.getFullYear() - fn.getFullYear();
-    let meses = fe.getMonth() - fn.getMonth();
-    let dias = fe.getDate() - fn.getDate();
-    if (dias < 0) meses--;
-    if (meses < 0) { años--; meses += 12; }
-    edadMesesFinal = años * 12 + meses;
-    edadCalculada.textContent = edadMesesFinal < 0 || edadMesesFinal > 60
-      ? "❌ Edad fuera de rango"
-      : `${años} años ${meses} meses (${edadMesesFinal})`;
+function calcularEdad() {
+  const fn = new Date(form.fechaNacimiento.value);
+  const fe = new Date(form.fechaEvaluacion.value);
+  if (!form.fechaNacimiento.value || !form.fechaEvaluacion.value || isNaN(fn) || isNaN(fe)) {
+    edadCalculada.textContent = "--";
+    edadMesesFinal = null;
+    return;
   }
+
+  let años = fe.getFullYear() - fn.getFullYear();
+  let meses = fe.getMonth() - fn.getMonth();
+  let dias = fe.getDate() - fn.getDate();
+
+  if (dias < 0) {
+    meses--;
+    const ultimoDiaMesAnterior = new Date(fe.getFullYear(), fe.getMonth(), 0).getDate();
+    dias += ultimoDiaMesAnterior;
+  }
+
+  if (meses < 0) {
+    años--;
+    meses += 12;
+  }
+
+  edadMesesFinal = años * 12 + meses;
+
+  edadCalculada.textContent =
+    edadMesesFinal < 0 || edadMesesFinal > 60
+      ? "❌ Edad fuera de rango"
+      : `${años} años ${meses} meses ${dias} días (${edadMesesFinal})`;
+}
+
 
   function calcularPesoKg() {
     const lbs = parseFloat(form.libras.value) || 0;
