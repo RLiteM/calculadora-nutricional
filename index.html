@@ -1,17 +1,31 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8" />
   <title>Calculadora Nutricional</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
   <div class="container" id="contenedorFormulario">
-<h1>Calculadora Nutricional 0 &lt; 5 años</h1>
+    <h1>Calculadora Nutricional 0 &lt; 5 años</h1>
 
     <form id="formulario">
       <div class="doble">
+
+        <div class="fila toggle-edad-corregida">
+          <label for="toggleEdadCorregida">Edad corregida:</label>
+          <label class="toggle-switch">
+            <input type="checkbox" id="toggleEdadCorregida" />
+            <span class="slider"></span>
+          </label>
+          <div id="cajaEdadGestacional" class="caja-edad-gestacional oculto">
+            <span id="textoEdadGestacional">Seleccionar</span>
+            <ul id="listaSemanas" class="lista-semanas oculto"></ul>
+          </div>
+        </div>
         <div class="fila-fechas">
           <div style="flex: 1 1 48%;">
             <label for="fechaNacimiento">Fecha Nac.:</label>
@@ -23,6 +37,7 @@
           </div>
         </div>
         <div class="edad-linea">Edad: <span id="edadCalculada">--</span></div>
+
       </div>
 
       <div class="doble">
@@ -44,23 +59,24 @@
       </div>
       <input type="hidden" name="sexo" id="sexo" required />
 
-<div class="fila fila-boton-limpiar">
-  <button type="submit" id="botonPrincipal" class="btn-evaluar">Evaluar</button>
-  <button type="button" id="botonBasura" class="btn-icono" title="Limpiar">
-    <img src="img/ic_basura.png" alt="Limpiar" />
-  </button>
-</div>
+      <div class="fila fila-boton-limpiar">
+        <button type="submit" id="botonPrincipal" class="btn-evaluar">Evaluar</button>
+        <button type="button" id="botonBasura" class="btn-icono" title="Limpiar">
+          <img src="img/ic_basura.png" alt="Limpiar" />
+        </button>
+      </div>
     </form>
 
-<div class="resultado">
-  <div id="resultadoPE"></div>
-  <div id="resultadoTE"></div>
-  <div id="resultadoPT"></div>
-</div>
+    <div class="resultado">
+      <div id="resultadoPE"></div>
+      <div id="resultadoTE"></div>
+      <div id="resultadoPT"></div>
+    </div>
   </div>
 
   <script type="module" src="script.js"></script>
   <script type="module" src="limpiar.js"></script>
 
 </body>
+
 </html>

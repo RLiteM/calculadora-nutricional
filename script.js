@@ -28,6 +28,51 @@ document.addEventListener("DOMContentLoaded", () => {
     })
   );
 
+
+const toggleEdad = document.getElementById("toggleEdadCorregida");
+const cajaEdad = document.getElementById("cajaEdadGestacional");
+const textoEdad = document.getElementById("textoEdadGestacional");
+const listaSemanas = document.getElementById("listaSemanas");
+
+let semanaSeleccionada = null;
+
+for (let i = 26; i <= 36; i++) {
+  const li = document.createElement("li");
+  li.textContent = `${i} semanas`;
+  li.addEventListener("click", (e) => {
+    e.stopPropagation(); 
+    semanaSeleccionada = i;
+    const correccion = 40 - i;
+    textoEdad.textContent = `${i} semanas (-${correccion})`;
+
+    listaSemanas.classList.add("oculto");
+    cajaEdad.classList.remove("activo");
+  });
+  listaSemanas.appendChild(li);
+}
+
+
+toggleEdad.addEventListener("change", () => {
+  cajaEdad.classList.toggle("oculto", !toggleEdad.checked);
+});
+
+cajaEdad.addEventListener("click", (e) => {
+  e.stopPropagation(); 
+  if (!toggleEdad.checked) return; 
+  listaSemanas.classList.toggle("oculto");
+  cajaEdad.classList.toggle("activo");
+});
+
+document.addEventListener("click", (e) => {
+  if (!cajaEdad.contains(e.target)) {
+    listaSemanas.classList.add("oculto");
+    cajaEdad.classList.remove("activo");
+  }
+});
+
+
+
+
 function calcularEdad() {
   const fn = new Date(form.fechaNacimiento.value);
   const fe = new Date(form.fechaEvaluacion.value);
