@@ -82,17 +82,7 @@ canvas {
 }
 
 @media screen and (orientation: portrait) and (max-width: 768px) {
-    .canvas-wrapper {
-        transform: rotate(90deg);
-        transform-origin: center;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 100vh;
-        height: 100vw;
-        translate: -50% -50%;
-    }
-
+    
     h2 {
         position: fixed;
         top: 0.5rem;

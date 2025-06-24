@@ -166,23 +166,21 @@ async function dibujar(indicador, sexo, ref, puntoUsuario) {
               const unidad = colX.toLowerCase().includes("mes") ? " meses" : " cm";
               return `${x.toFixed(2)}${unidad}`;
             },
-  label: (item) => {
-  if (item.dataset.label === "Evaluado") {
-    const z = puntoUsuario.z != null ? puntoUsuario.z.toFixed(2) : "N/A";
-    const unidadX = (indicador === "PT") ? "cm" : "meses";
-    const unidadY = (indicador === "TE") ? "cm" : "kg";
-    return [
-      `Z-Score: ${z}`,
-      `X (${unidadX}): ${item.raw.x}`,
-      `Y (${unidadY}): ${item.raw.y}`
-      
-    ];
-  }
+            label: (item) => {
+              if (item.dataset.label === "Evaluado") {
+                const z = puntoUsuario.z != null ? puntoUsuario.z.toFixed(2) : "N/A";
+                const unidadX = (indicador === "PT") ? "cm" : "meses";
+                const unidadY = (indicador === "TE") ? "cm" : "kg";
+                return [
+                  `Z-Score: ${z}`,
+                  `X (${unidadX}): ${item.raw.x}`,
+                  `Y (${unidadY}): ${item.raw.y}`
+                ];
+              }
 
-  const unidadY = (indicador === "TE") ? " cm" : " kg";
-  return `${item.dataset.label}: ${item.formattedValue}${unidadY}`;
-}
-
+              const unidadY = (indicador === "TE") ? " cm" : " kg";
+              return `${item.dataset.label}: ${item.formattedValue}${unidadY}`;
+            }
           }
         },
         zoom: {
