@@ -51,7 +51,10 @@ export async function evaluarIndicador(tipo, archivo, variable, valorUsuario, va
         break;
       }
     }
-    if (valorComparar < valoresZ[0]) z = -4;
+
+    // ✅ Aquí está el único cambio importante
+    if (valorComparar < valoresZ[0]) z = -3;
+    else if (valorComparar > valoresZ[valoresZ.length - 1]) z = 3;
   }
 
   const estado = interpretarZScore(tipo, z, edadMeses);
@@ -71,8 +74,8 @@ export async function evaluarIndicador(tipo, archivo, variable, valorUsuario, va
     }
   }
   if (zScoreReal === null) {
-    if (valorComparar < valoresZ[0]) zScoreReal = -3.5;
-    else if (valorComparar > valoresZ[valoresZ.length - 1]) zScoreReal = 3.5;
+    if (valorComparar < valoresZ[0]) zScoreReal = -3;
+    else if (valorComparar > valoresZ[valoresZ.length - 1]) zScoreReal = 3;
 
     console.log("⚠️ valorComparar fuera de rango:");
     console.log(`   valorComparar: ${valorComparar}`);
