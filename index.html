@@ -15,17 +15,22 @@
     <form id="formulario">
       <div class="doble">
 
-        <div class="fila toggle-edad-corregida">
-          <label for="toggleEdadCorregida">Edad corregida:</label>
-          <label class="toggle-switch">
-            <input type="checkbox" id="toggleEdadCorregida" />
-            <span class="slider"></span>
-          </label>
-          <div id="cajaEdadGestacional" class="caja-edad-gestacional oculto">
-            <span id="textoEdadGestacional">Seleccionar</span>
-            <ul id="listaSemanas" class="lista-semanas oculto"></ul>
-          </div>
-        </div>
+<div class="fila fila-edad-corregida">
+  <div class="grupo-toggle">
+    <label for="toggleEdadCorregida">Edad corregida:</label>
+    <label class="toggle-switch">
+      <input type="checkbox" id="toggleEdadCorregida" />
+      <span class="slider"></span>
+    </label>
+  </div>
+
+  <div id="cajaEdadGestacional" class="caja-edad-gestacional oculto">
+    <span id="textoEdadGestacional">Seleccionar</span>
+    <ul id="listaSemanas" class="lista-semanas oculto"></ul>
+  </div>
+</div>
+
+
         <div class="fila-fechas">
           <div style="flex: 1 1 48%;">
             <label for="fechaNacimiento">Fecha Nac.:</label>

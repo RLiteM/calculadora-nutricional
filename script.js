@@ -33,8 +33,12 @@ const toggleEdad = document.getElementById("toggleEdadCorregida");
 const cajaEdad = document.getElementById("cajaEdadGestacional");
 const textoEdad = document.getElementById("textoEdadGestacional");
 const listaSemanas = document.getElementById("listaSemanas");
+toggleEdad.checked = false;
+cajaEdad.classList.add("oculto");
 
 let semanaSeleccionada = null;
+
+cajaEdad.classList.toggle("oculto", !toggleEdad.checked);
 
 for (let i = 26; i <= 36; i++) {
   const li = document.createElement("li");
@@ -51,10 +55,10 @@ for (let i = 26; i <= 36; i++) {
   listaSemanas.appendChild(li);
 }
 
-
 toggleEdad.addEventListener("change", () => {
   cajaEdad.classList.toggle("oculto", !toggleEdad.checked);
 });
+
 
 cajaEdad.addEventListener("click", (e) => {
   e.stopPropagation(); 

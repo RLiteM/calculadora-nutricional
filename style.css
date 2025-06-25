@@ -34,13 +34,8 @@ body {
   overflow: hidden;
 }
 
-.container.femenino {
-  background-color: var(--fondo-femenino);
-}
-
-.container.masculino {
-  background-color: var(--fondo-masculino);
-}
+.container.masculino { background-color: var(--fondo-masculino); }
+.container.femenino { background-color: var(--fondo-femenino); }
 
 h1 {
   font-size: 24px;
@@ -69,45 +64,38 @@ input[type="text"] {
   transition: border 0.3s ease;
 }
 
-input[type="number"]:focus,
-input[type="date"]:focus,
-input[type="text"]:focus {
+input:focus {
   border-color: var(--azul);
   outline: none;
 }
 
 .fila,
-.fila-fechas {
+.fila-fechas,
+.fila-sexo,
+.fila.toggle-edad-corregida {
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
-}
-
-.fila>input,
-.fila-fechas>input {
-  flex: 1 1 48%;
-}
-
-.fila-sexo {
-  display: flex;
   justify-content: space-between;
-  margin-top: 6px;
-  gap: 10px;
-  flex-wrap: wrap;
+}
+
+.fila > input,
+.fila-fechas > input,
+.fila-sexo > button,
+.fila.toggle-edad-corregida > * {
+  flex: 1 1 48%;
 }
 
 .btn-sexo {
-  flex: 1 1 48%;
   padding: 12px;
   background: #f5f5f5;
   border: none;
   border-radius: 12px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.05);
-  white-space: nowrap;
   color: #000;
+  transition: 0.3s;
 }
 
 .btn-sexo.selected[data-sexo="M"] {
@@ -124,7 +112,6 @@ input[type="text"]:focus {
   font-size: 14px;
   margin-top: 5px;
   color: #555;
-  word-wrap: break-word;
 }
 
 .peso-kg {
@@ -133,7 +120,9 @@ input[type="text"]:focus {
   margin-top: 5px;
 }
 
-button {
+button,
+.btn-evaluar,
+.btn-limpiar {
   padding: 14px;
   width: 100%;
   border: none;
@@ -143,8 +132,8 @@ button {
   border-radius: 12px;
   cursor: pointer;
   margin-top: 24px;
-  transition: background-color 0.3s ease, transform 0.2s ease;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s, transform 0.2s;
 }
 
 .btn-evaluar {
@@ -173,61 +162,57 @@ button {
 }
 
 .bloque-resultado {
-  padding: 1rem;
-  border-radius: 12px;
+  position: relative;
+  padding: 1rem 1.2rem;
+  border-radius: 20px;
   font-weight: bold;
+  font-size: 15px;
   color: white;
-  overflow-wrap: break-word;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
 .bloque-resultado .titulo {
-  margin-bottom: 5px;
-  font-size: 15px;
+  font-size: 16px;
 }
 
-.normal {
-  background-color: #4caf50;
-}
+.normal    { background-color: #4caf50; }
+.severo    { background-color: #6a1b9a; }
+.moderado  { background-color: #d32f2f; }
+.bajo      { background-color: #f44336; }
+.amarillo  { background-color: #fdd835; color: black; }
+.naranja   { background-color: #c59802; }
+.rosa      { background-color: #ff6702; }
 
-.severo {
-  background-color: #6a1b9a;
-}
-
-.moderado {
-  background-color: #d32f2f;
-}
-
-.bajo {
-  background-color: #f44336;
-}
-
-.amarillo {
-  background-color: #fdd835;
+.boton-grafica {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: white;
+  border-radius: 40px;
+  padding: 6px 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
   color: black;
+  font-weight: 600;
+  font-size: 13px;
+  text-decoration: none;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+  transition: transform 0.2s ease, background-color 0.2s ease;
 }
 
-.naranja {
-  background-color: #c59802;
+.boton-grafica:hover {
+  transform: scale(1.05);
+  background-color: #f5f5f5;
 }
 
-.rosa {
-  background-color: #ff6702;
-}
-
-@media (max-width: 600px) {
-  .container {
-    border-radius: 0;
-    padding: 20px;
-  }
-
-  .fila-fechas>input {
-    flex: 1 1 100%;
-  }
-
-  .fila>input,
-  .fila-sexo>button {
-    flex: 1 1 48%;
-  }
+.boton-grafica img,
+.icono-boton {
+  width: 20px;
+  height: 20px;
 }
 
 .fila-boton-limpiar {
@@ -237,7 +222,7 @@ button {
   margin-top: 24px;
 }
 
-.fila-boton-limpiar>#botonPrincipal {
+.fila-boton-limpiar > #botonPrincipal {
   flex: 1;
 }
 
@@ -245,15 +230,15 @@ button {
   background: rgb(255, 55, 55);
   border: none;
   border-radius: 12px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
   height: 48px;
   width: 56px;
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
   padding: 0;
-  transition: transform 0.2s ease-in-out;
+  cursor: pointer;
+  transition: transform 0.2s;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
 #botonBasura:hover {
@@ -263,82 +248,6 @@ button {
 #botonBasura img {
   width: 28px;
   height: 28px;
-}
-
-.bloque-resultado {
-  position: relative;
-  padding: 1rem 1.2rem;
-  border-radius: 20px;
-  font-weight: bold;
-  font-size: 15px;
-  color: white;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  min-height: auto;
-  word-wrap: break-word;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-/* Título dentro del resultado */
-.bloque-resultado .titulo {
-  font-size: 16px;
-  margin-bottom: 2px;
-}
-
-/* Texto del estado (con Z-score) */
-.bloque-resultado .texto-estado {
-  font-size: 14px;
-  font-weight: 500;
-}
-
-
-.boton-grafica {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background-color: white;
-  border-radius: 40px;
-  padding: 6px 12px 6px 14px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  text-decoration: none;
-  color: black;
-  font-weight: 600;
-  font-size: 13px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
-  z-index: 10;
-  transition: transform 0.2s ease, background-color 0.2s ease;
-}
-
-.boton-grafica:hover {
-  transform: scale(1.05);
-  background-color: #f5f5f5;
-}
-
-/* Ícono del botón */
-.boton-grafica img,
-.icono-boton {
-  width: 20px;
-  height: 20px;
-}
-
-.fila.toggle-edad-corregida {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  margin-top: 16px;
-  flex-wrap: wrap;
-}
-
-.fila.toggle-edad-corregida>label {
-  display: flex;
-  align-items: center;
-  white-space: nowrap;
-  margin: 0;
-  flex-shrink: 0;
-  font-weight: 500;
 }
 
 .toggle-switch {
@@ -361,10 +270,7 @@ button {
   cursor: pointer;
   background-color: #ccc;
   border-radius: 34px;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  top: 0; left: 0; right: 0; bottom: 0;
   transition: 0.4s;
 }
 
@@ -376,49 +282,47 @@ button {
   left: 3px;
   bottom: 3px;
   background-color: white;
-  transition: 0.4s;
   border-radius: 50%;
+  transition: 0.4s;
 }
 
-.toggle-switch input:checked+.slider {
+.toggle-switch input:checked + .slider {
   background-color: var(--azul);
 }
 
-.toggle-switch input:checked+.slider::before {
+.toggle-switch input:checked + .slider::before {
   transform: translateX(18px);
 }
 
 .caja-edad-gestacional {
   position: relative;
-  flex: 1 1 48%;
   padding: 12px;
   border: 1px solid #ccc;
   border-radius: 10px;
   background: #fcfcfc;
   cursor: pointer;
   font-size: 15px;
-  user-select: none;
-  white-space: nowrap;
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
+  min-width: 130px;
+  height: 44px;
+  flex: 1 1 48%;
   box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.08);
   transition: border 0.3s ease, box-shadow 0.3s ease;
-  min-width: 130px;
   color: #444;
-  height: 44px;
 }
 
-.caja-edad-gestacional:focus-within,
-.caja-edad-gestacional:hover {
+.caja-edad-gestacional:hover,
+.caja-edad-gestacional:focus-within {
   border-color: var(--azul);
   box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.08), 0 0 0 2px rgba(0, 123, 255, 0.25);
 }
 
 .caja-edad-gestacional span#textoEdadGestacional {
-  flex-grow: 1;
   overflow: hidden;
   text-overflow: ellipsis;
+  flex-grow: 1;
 }
 
 .lista-semanas {
@@ -435,7 +339,6 @@ button {
   overflow-y: auto;
   z-index: 10;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-  width: auto;
 }
 
 .lista-semanas li {
@@ -453,19 +356,28 @@ button {
   display: none;
 }
 
-@media (max-width: 600px) {
-  .fila.toggle-edad-corregida {
-    flex-direction: column;
-    align-items: flex-start;
-  }
+.fila-edad-corregida {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
 
-  .fila.toggle-edad-corregida>label {
-    width: 100%;
-  }
+.fila-edad-corregida > .grupo-toggle,
+.fila-edad-corregida > .caja-edad-gestacional {
+  flex: 1 1 48%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
 
-  .caja-edad-gestacional {
-    width: 100%;
-    flex: none;
-    margin-top: 10px;
-  }
+.grupo-toggle label {
+  margin: 0;
+  font-weight: 600;
+  color: #444;
+}
+
+.caja-edad-gestacional.oculto {
+  display: none !important;
 }
