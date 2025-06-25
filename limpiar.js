@@ -8,6 +8,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const edadCalculada = document.getElementById("edadCalculada");
   const pesoKgSpan = document.getElementById("pesoKg");
   const boton = document.getElementById("botonPrincipal");
+  const toggleEdad = document.getElementById("toggleEdadCorregida");
+const cajaEdad = document.getElementById("cajaEdadGestacional");
+const listaSemanas = document.getElementById("listaSemanas");
+const textoEdad = document.getElementById("textoEdadGestacional");
+
 
   const hoy = new Date().toISOString().split("T")[0];
   const botonBasura = document.getElementById("botonBasura");
@@ -26,6 +31,15 @@ document.getElementById("resultadoPT").innerHTML = "";
     boton.textContent = "Evaluar";
     boton.classList.remove("btn-limpiar");
     boton.classList.add("btn-evaluar");
+
+    // Reset edad corregida
+toggleEdad.checked = false;
+cajaEdad.classList.add("oculto");
+cajaEdad.classList.remove("activo");
+listaSemanas.classList.add("oculto");
+textoEdad.textContent = "Seleccionar";
+localStorage.removeItem("datosGrafica");
+localStorage.removeItem("semanaSeleccionada");
   }
 
   if (botonBasura) {
