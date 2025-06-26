@@ -18,7 +18,7 @@ export async function evaluarIndicador(tipo, archivo, variable, valorUsuario, va
 
   let z = -4;
 
-  if (tipo === "PT") {
+ 
     for (let i = 0; i < valoresZ.length; i++) {
       const actual = valoresZ[i];
       const siguiente = valoresZ[i + 1] ?? Infinity;
@@ -44,18 +44,7 @@ export async function evaluarIndicador(tipo, archivo, variable, valorUsuario, va
       }
       if (z !== -4) break;
     }
-  } else {
-    for (let i = 1; i < valoresZ.length; i++) {
-      if (valorComparar < valoresZ[i]) {
-        z = i - 3;
-        break;
-      }
-    }
 
-    // ✅ Aquí está el único cambio importante
-    if (valorComparar < valoresZ[0]) z = -3;
-    else if (valorComparar > valoresZ[valoresZ.length - 1]) z = 3;
-  }
 
   const estado = interpretarZScore(tipo, z, edadMeses);
 
@@ -74,10 +63,8 @@ export async function evaluarIndicador(tipo, archivo, variable, valorUsuario, va
     }
   }
   if (zScoreReal === null) {
-    if (valorComparar < valoresZ[0]) zScoreReal = -3;
-    else if (valorComparar > valoresZ[valoresZ.length - 1]) zScoreReal = 3;
-
-    console.log("⚠️ valorComparar fuera de rango:");
+    zScoreReal = (valorComparar < valoresZ[0]) ? -3.5 : (valorComparar > valoresZ[valoresZ.length-1]) ? 3.5  : 0
+    console.log("⚠️ valorComparar fuera de rango: ");
     console.log(`   valorComparar: ${valorComparar}`);
     console.log(`   zScoreReal forzado: ${zScoreReal}`);
   }
