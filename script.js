@@ -234,7 +234,7 @@ function mostrarBloqueResultado(idContenedor, titulo, estado, referencia, indica
     };
 
     try {
-      console.log(data)
+      
       const result = await evaluarCompleto(data);
 
       mostrarBloqueResultado("resultadoPE", "Peso para la Edad", result.pesoEdad.estado, result.pesoEdad.referencia, "PE");
