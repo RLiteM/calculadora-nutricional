@@ -16,6 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let edadMesesFinal = null;
   let pesoKgCalculado = 0;
+  let weeks = 0
 
   sexoButtons.forEach(btn =>
     btn.addEventListener("click", () => {
@@ -46,17 +47,19 @@ for (let i = 26; i <= 36; i++) {
   li.addEventListener("click", (e) => {
     e.stopPropagation(); 
     semanaSeleccionada = i;
-    const correccion = 40 - i;
-    textoEdad.textContent = `${i} semanas (-${correccion})`;
+    weeks = 40 - i;
+    textoEdad.textContent = `${i} semanas (-${weeks})`;
 
     listaSemanas.classList.add("oculto");
     cajaEdad.classList.remove("activo");
+    calcularEdad()
   });
   listaSemanas.appendChild(li);
 }
 
 toggleEdad.addEventListener("change", () => {
   cajaEdad.classList.toggle("oculto", !toggleEdad.checked);
+  calcularEdad()
 });
 
 
@@ -77,7 +80,9 @@ document.addEventListener("click", (e) => {
 
 
 
+
 function calcularEdad() {
+  let correction = (toggleEdad.checked) ? weeks : 0
   const fn = new Date(form.fechaNacimiento.value);
   const fe = new Date(form.fechaEvaluacion.value);
   if (!form.fechaNacimiento.value || !form.fechaEvaluacion.value || isNaN(fn) || isNaN(fe)) {
@@ -85,6 +90,17 @@ function calcularEdad() {
     edadMesesFinal = null;
     return;
   }
+
+  if (correction !=0){
+    let days = correction* 7;
+    let hours = days * 24;
+    let seconds = hours *3600;
+    let epochMilli = seconds * 1000;
+    let newTime = fe.getTime() - epochMilli;
+    fe.setTime(newTime)
+  }
+
+
 
   let años = fe.getFullYear() - fn.getFullYear();
   let meses = fe.getMonth() - fn.getMonth();
@@ -191,6 +207,7 @@ function mostrarBloqueResultado(idContenedor, titulo, estado, referencia, indica
 
   ["fechaNacimiento", "fechaEvaluacion", "libras", "onzas", "talla"].forEach(name => {
     form[name].addEventListener("input", () => {
+
       calcularEdad();
       calcularPesoKg();
     });
@@ -217,6 +234,7 @@ function mostrarBloqueResultado(idContenedor, titulo, estado, referencia, indica
     };
 
     try {
+      console.log(data)
       const result = await evaluarCompleto(data);
 
       mostrarBloqueResultado("resultadoPE", "Peso para la Edad", result.pesoEdad.estado, result.pesoEdad.referencia, "PE");
