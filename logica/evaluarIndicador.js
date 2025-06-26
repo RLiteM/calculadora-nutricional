@@ -55,7 +55,7 @@ export async function evaluarIndicador(tipo, archivo, variable, valorUsuario, va
     const z1 = i - 3;
     if (valorComparar >= val1 && valorComparar <= val2) {
       zScoreReal = z1 + ((valorComparar - val1) / (val2 - val1));
-      console.log("🔍 Interpolación Z:");
+      console.log("🔍 Interpolación Z: ");
       console.log(`   valorComparar: ${valorComparar}`);
       console.log(`   Entre val1: ${val1} (z = ${z1}) y val2: ${val2} (z = ${z1 + 1})`);
       console.log(`   Resultado zScoreReal: ${zScoreReal.toFixed(4)}`);
