@@ -11,7 +11,7 @@ export async function evaluarCompleto({ sexo, edadMeses, peso, talla }) {
 
   const pesoEdad = await evaluarIndicador("PE", archivoPE, "Meses", edadMeses, peso, edadMeses);
   const tallaEdad = await evaluarIndicador("TE", archivoTE, "Meses", edadMeses, talla, edadMeses);
-  const pesoTalla = await evaluarIndicador("PT", archivoPT, "cm", talla, peso);
+  const pesoTalla = await evaluarIndicador("PT", archivoPT, "cm", talla, peso,edadMeses);
 
   return {
     pesoEdad,

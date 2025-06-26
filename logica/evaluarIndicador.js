@@ -94,6 +94,8 @@ function interpretarZScore(indicador, z, edadMeses = -1) {
     return "Normal";
   }
   if (indicador === "PT") {
+    //validar que sea de 0 a 5 meses debe caer en normal 
+    z = (z == -1 && edadMeses <= 5) ? 0 : z
     switch (z) {
       case -4:
       case -3: return "Desnutrición Aguda Severa";
