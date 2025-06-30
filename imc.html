@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Calculadora Nutricional - Vista Previa de Ruleta</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="estilos/styleIMC.css" />
+</head>
+
+<body>
+    <div class="container" id="contenedorFormulario">
+        <h1>Calculadora Nutricional 0 &lt; 5 años</h1>
+
+        <form id="formulario">
+            <div class="fila-fechas">
+                <div>
+                    <label for="fechaNacimiento">Fecha Nac.:</label>
+                    <input type="date" name="fechaNacimiento" id="fechaNacimiento" required />
+                </div>
+                <div>
+                    <label for="fechaEvaluacion">Fecha Evaluación:</label>
+                    <input type="date" name="fechaEvaluacion" id="fechaEvaluacion" required />
+                </div>
+            </div>
+            <div class="edad-linea">Edad: <span id="edadCalculada">--</span></div>
+
+            <div>
+                <label>Peso:</label>
+                <div class="fila">
+                    <input type="number" name="libras" placeholder="Libras" step="1" min="0" required />
+                    <input type="number" name="onzas" placeholder="Onzas" step="1" min="0" />
+                </div>
+                <small class="peso-kg">Equivale a: <span id="pesoKg">0.00</span> kg</small>
+            </div>
+
+            <label>Talla (cm):</label>
+            <input type="number" name="talla" placeholder="Ej: 110" step="0.01" required />
+
+            <label>Sexo:</label>
+            <div class="fila-sexo">
+                <button type="button" class="btn-sexo" data-sexo="M">👦 Masculino</button>
+                <button type="button" class="btn-sexo" data-sexo="F">👧 Femenino</button>
+            </div>
+            <input type="hidden" name="sexo" id="sexo" required />
+
+            <div class="fila-boton-limpiar">
+                <button type="submit" id="botonPrincipal" class="btn-evaluar">Evaluar</button>
+                <button type="button" id="botonBasura" class="btn-icono" title="Limpiar">
+                    <img src="img/ic_basura.png" alt="Limpiar" />
+                </button>
+            </div>
+        </form>
+
+        <div class="resultado">
+            <canvas id="ruletaCanvas" width="400" height="400"></canvas>
+            </div>
+
+        </div>
+      <script src="logicaimc/scoreCalculator.js"></script>
+    <script src="logicaimc/ruletaGaugeView.js"></script>
+    <script src="logicaimc/logicaicm.js"></script>
+
+</body>
+
+</html>
