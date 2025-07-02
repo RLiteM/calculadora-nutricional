@@ -150,6 +150,12 @@ function calcularEdad() {
     return "";
   }
 
+function GetAndClearContainer(idContenedor){
+  const contenedor = document.getElementById(idContenedor);
+  contenedor.innerHTML = "";
+  return contenedor;
+}  
+  
 function mostrarBloqueResultado(idContenedor, titulo, estado, referencia, indicador) {
   const claseColor = getColorClass("", estado);
 
@@ -199,8 +205,7 @@ function mostrarBloqueResultado(idContenedor, titulo, estado, referencia, indica
   div.appendChild(tituloDiv);
   div.appendChild(estadoDiv);
 
-  const contenedor = document.getElementById(idContenedor);
-  contenedor.innerHTML = "";
+  const contenedor = GetAndClearContainer(idContenedor)
   contenedor.appendChild(div);
 }
 
@@ -234,11 +239,14 @@ function mostrarBloqueResultado(idContenedor, titulo, estado, referencia, indica
     };
 
     try {
-      
+      GetAndClearContainer("resultadoPE");
+      GetAndClearContainer("resultadoTE");
+      GetAndClearContainer("resultadoPT");
       const result = await evaluarCompleto(data);
 
       mostrarBloqueResultado("resultadoPE", "Peso para la Edad", result.pesoEdad.estado, result.pesoEdad.referencia, "PE");
       mostrarBloqueResultado("resultadoTE", "Talla para la Edad", result.tallaEdad.estado, result.tallaEdad.referencia, "TE");
+      if (edadMesesFinal != 0)
       mostrarBloqueResultado("resultadoPT", "Peso para la Talla", result.pesoTalla.estado, result.pesoTalla.referencia, "PT");
 
     } catch (err) {
