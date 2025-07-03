@@ -150,7 +150,7 @@ function calcularEdad() {
     return "";
   }
 
-function GetAndClearContainer(idContenedor){
+function getAndClearContainer(idContenedor){
   const contenedor = document.getElementById(idContenedor);
   contenedor.innerHTML = "";
   return contenedor;
@@ -205,7 +205,7 @@ function mostrarBloqueResultado(idContenedor, titulo, estado, referencia, indica
   div.appendChild(tituloDiv);
   div.appendChild(estadoDiv);
 
-  const contenedor = GetAndClearContainer(idContenedor)
+  const contenedor = getAndClearContainer(idContenedor)
   contenedor.appendChild(div);
 }
 
@@ -239,9 +239,9 @@ function mostrarBloqueResultado(idContenedor, titulo, estado, referencia, indica
     };
 
     try {
-      GetAndClearContainer("resultadoPE");
-      GetAndClearContainer("resultadoTE");
-      GetAndClearContainer("resultadoPT");
+      getAndClearContainer("resultadoPE");
+      getAndClearContainer("resultadoTE");
+      getAndClearContainer("resultadoPT");
       const result = await evaluarCompleto(data);
 
       mostrarBloqueResultado("resultadoPE", "Peso para la Edad", result.pesoEdad.estado, result.pesoEdad.referencia, "PE");
